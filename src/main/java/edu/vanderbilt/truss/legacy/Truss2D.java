@@ -11,7 +11,6 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import edu.vanderbilt.truss.InputStruct;
-import edu.vanderbilt.truss.Joint;
 
 public class Truss2D {
 
@@ -65,9 +64,7 @@ public class Truss2D {
     }
 
     public void injectData(InputStruct inputStruct) {
-        for (Joint joint : inputStruct.joints()) {
 
-        }
     }
 
     private boolean scanInputData() throws IOException, NumberFormatException {
@@ -121,7 +118,8 @@ public class Truss2D {
                                 obj3.j2 = n6 - 1;
                                 obj3.area = new Float(stringTokenizer.nextToken());
                                 if (this.materialData.size() > 1) {
-                                    obj3.elasticity = this.materialData.get(new Integer(stringTokenizer.nextToken()) - 1);
+                                    obj3.elasticity = this.materialData.get(
+                                            Integer.parseInt(stringTokenizer.nextToken()) - 1);
                                 } else {
                                     obj3.elasticity = this.materialData.get(0);
                                 }
@@ -131,8 +129,9 @@ public class Truss2D {
                             case 4: {
                                 int int4 = Integer.parseInt(stringTokenizer.nextToken());
                                 --int4;
-                                final MyPoint obj4 = new MyPoint(Integer.parseInt(stringTokenizer.nextToken()),
-                                                                 Integer.parseInt(stringTokenizer.nextToken()));
+                                final MyPoint obj4 =
+                                        new MyPoint(Integer.parseInt(stringTokenizer.nextToken()),
+                                                    Integer.parseInt(stringTokenizer.nextToken()));
 
                                 convolutedInsert(restraintData, obj4, int4);
                                 this.joints.get(int4).restraint = true;
@@ -374,7 +373,12 @@ public class Truss2D {
         final double[] array = new double[members.size()];
         for (int i = 1; i <= members.size(); ++i) {
             final LegacyMember member = members.get(i - 1);
-            array[i - 1] = member.area * member.elasticity / member.length * (member.cosx * (this.wVector[2 * (member.j2 + 1) - 2] - this.wVector[2 * (member.j1 + 1) - 2]) + member.cosy * (this.wVector[2 * (member.j2 + 1) - 1] - this.wVector[2 * (member.j1 + 1) - 1]));
+            array[i - 1] = member.area * member.elasticity /
+                    member.length * (
+                    member.cosx * (this.wVector[2 * (member.j2 + 1) - 2]
+                    - this.wVector[2 * (member.j1 + 1) - 2])
+                    + member.cosy * (this.wVector[2 * (member.j2 + 1) - 1]
+                    - this.wVector[2 * (member.j1 + 1) - 1]));
         }
         final double[] array2 = new double[joints.size()];
         final double[] array3 = new double[joints.size()];
@@ -418,7 +422,9 @@ public class Truss2D {
         }
         this.dataOutput.println("Joint Displacements:");
         for (int l = 1; l <= joints.size(); ++l) {
-            this.dataOutput.println("\t" + l + "\t" + numberFormatter2.round(this.wVector[2 * l - 2]) + "\t" + numberFormatter2.round(this.wVector[2 * l - 1]));
+            this.dataOutput.println("\t" + l + "\t" +
+                                            numberFormatter2.round(this.wVector[2 * l - 2]) + "\t" +
+                                            numberFormatter2.round(this.wVector[2 * l - 1]));
         }
         this.dataOutput.println("\nMember Forces:");
         for (int n5 = 0; n5 < members.size(); ++n5) {
@@ -433,7 +439,9 @@ public class Truss2D {
                 array3[n6] = 0.0;
             }
             if (array2[n6] != 0.0 || array3[n6] != 0.0) {
-                this.dataOutput.println("\t" + (n6 + 1) + "\t" + numberFormatter.round(array2[n6]) + "\t" + numberFormatter.round(array3[n6]));
+                this.dataOutput.println("\t" + (n6 + 1) + "\t" +
+                                                numberFormatter.round(array2[n6]) + "\t" +
+                                                numberFormatter.round(array3[n6]));
             }
         }
     }
