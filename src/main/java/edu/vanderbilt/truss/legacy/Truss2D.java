@@ -182,6 +182,7 @@ public class Truss2D {
         return true;
     }
     
+    @SuppressWarnings("ForLoopReplaceableByForEach")
     private void calculateBWAndDirCos() {
         for (int i = 0; i < members.size(); ++i) {
             final int j1 = members.get(i).j1;
@@ -203,6 +204,7 @@ public class Truss2D {
         }
     }
     
+    @SuppressWarnings({"MismatchedReadAndWriteOfArray", "ForLoopReplaceableByForEach"})
     private void calculateUnrestrainedStiffnessMx() {
         this.xkMatrix = new double[2 * joints.size()][this.maxb];
         final double[][] array = new double[4][4];
@@ -306,6 +308,7 @@ public class Truss2D {
         }
     }
     
+    @SuppressWarnings("MismatchedReadAndWriteOfArray")
     private void calculateSubstitution() {
         for (int i = 1; i <= 2 * joints.size(); ++i) {
             int n = i;
@@ -350,6 +353,7 @@ public class Truss2D {
         }
     }
     
+    @SuppressWarnings({"MismatchedReadAndWriteOfArray", "UnnecessaryLocalVariable"})
     private void calculate() throws IOException {
         final double[] array = new double[members.size()];
         for (int i = 1; i <= members.size(); ++i) {
