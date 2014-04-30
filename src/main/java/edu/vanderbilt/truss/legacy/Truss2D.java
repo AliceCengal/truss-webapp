@@ -20,6 +20,9 @@ public class Truss2D {
     private static final int SUPPORT_SECTION  = 4;
     private static final int LOAD_SECTION     = 5;
 
+    private static final NumberFormatter FORMAT3 = new NumberFormatter(10, 3);
+    private static final NumberFormatter FORMAT6 = new NumberFormatter(10, 6);
+
     LegacyInputStruct input;
     BufferedReader dataInput;
     PrintStream dataOutput;
@@ -359,80 +362,73 @@ public class Truss2D {
         }
     }
     
-    @SuppressWarnings({"MismatchedReadAndWriteOfArray", "UnnecessaryLocalVariable"})
+    //@SuppressWarnings({"MismatchedReadAndWriteOfArray", "UnnecessaryLocalVariable"})
     private void calculate() throws IOException {
-        final double[] array = new double[input.members.size()];
+        final double[] memberForces = new double[input.members.size()];
         for (int i = 1; i <= input.members.size(); ++i) {
             final LegacyMember member = input.members.get(i - 1);
-            array[i - 1] = member.area * member.elasticity /
+            memberForces[i - 1] = member.area * member.elasticity /
                     member.length * (
                     member.cosx * (input.wVector[2 * (member.j2 + 1) - 2]
                     - input.wVector[2 * (member.j1 + 1) - 2])
                     + member.cosy * (input.wVector[2 * (member.j2 + 1) - 1]
                     - input.wVector[2 * (member.j1 + 1) - 1]));
         }
-        final double[] array2 = new double[input.joints.size()];
-        final double[] array3 = new double[input.joints.size()];
+        final double[] reactionX = new double[input.joints.size()];
+        final double[] reactionY = new double[input.joints.size()];
         final double[] array4 = new double[input.joints.size()];
         final double[] array5 = new double[input.joints.size()];
-        final NumberFormatter numberFormatter = new NumberFormatter(10, 3);
-        final NumberFormatter numberFormatter2 = new NumberFormatter(10, 6);
+
         for (int j = 0; j < input.joints.size(); ++j) {
             array4[j] = input.joints.get(j).jrx;
             array5[j] = input.joints.get(j).jry;
             if (array4[j] != 0.0) {
-                array2[j] = -input.joints.get(j).wx;
+                reactionX[j] = -input.joints.get(j).wx;
             }
             if (array5[j] != 0.0) {
-                array3[j] = -input.joints.get(j).wy;
+                reactionY[j] = -input.joints.get(j).wy;
             }
         }
+
         for (int k = 0; k < input.members.size(); ++k) {
             final int j2 = input.members.get(k).j1;
             final int j3 = input.members.get(k).j2;
             if (array4[j2] != 0.0) {
-                final double[] array6 = array2;
-                final int n = j2;
-                array6[n] -= input.members.get(k).cosx * array[k];
+                reactionX[j2] -= input.members.get(k).cosx * memberForces[k];
             }
             if (array5[j2] != 0.0) {
-                final double[] array7 = array3;
-                final int n2 = j2;
-                array7[n2] -= input.members.get(k).cosy * array[k];
+                reactionY[j2] -= input.members.get(k).cosy * memberForces[k];
             }
             if (array4[j3] != 0.0) {
-                final double[] array8 = array2;
-                final int n3 = j3;
-                array8[n3] += input.members.get(k).cosx * array[k];
+                reactionX[j3] += input.members.get(k).cosx * memberForces[k];
             }
             if (array5[j3] != 0.0) {
-                final double[] array9 = array3;
-                final int n4 = j3;
-                array9[n4] += input.members.get(k).cosy * array[k];
+                reactionY[j3] += input.members.get(k).cosy * memberForces[k];
             }
         }
+
         this.dataOutput.println("Joint Displacements:");
         for (int l = 1; l <= input.joints.size(); ++l) {
             this.dataOutput.println("\t" + l + "\t" +
-                                            numberFormatter2.round(input.wVector[2 * l - 2]) + "\t" +
-                                            numberFormatter2.round(input.wVector[2 * l - 1]));
+                                            FORMAT6.round(input.wVector[2 * l - 2]) + "\t" +
+                                            FORMAT6.round(input.wVector[2 * l - 1]));
         }
         this.dataOutput.println("\nMember Forces:");
         for (int n5 = 0; n5 < input.members.size(); ++n5) {
-            this.dataOutput.println("\t" + (n5 + 1) + "\t" + numberFormatter.round(array[n5]));
+            this.dataOutput.println("\t" + (n5 + 1) + "\t" + FORMAT3.round(memberForces[n5]));
         }
         this.dataOutput.println("\nReactions:");
         for (int n6 = 0; n6 < input.joints.size(); ++n6) {
-            if (Math.abs(array2[n6]) < 1.0E-10) {
-                array2[n6] = 0.0;
+            if (Math.abs(reactionX[n6]) < 1.0E-10) {
+                reactionX[n6] = 0.0;
             }
-            if (Math.abs(array3[n6]) < 1.0E-10) {
-                array3[n6] = 0.0;
+            if (Math.abs(reactionY[n6]) < 1.0E-10) {
+                reactionY[n6] = 0.0;
             }
-            if (array2[n6] != 0.0 || array3[n6] != 0.0) {
+            if (reactionX[n6] != 0.0 || reactionY[n6] != 0.0) {
                 this.dataOutput.println("\t" + (n6 + 1) + "\t" +
-                                                numberFormatter.round(array2[n6]) + "\t" +
-                                                numberFormatter.round(array3[n6]));
+                                                FORMAT3.round(reactionX[n6]) + "\t" +
+                                                FORMAT3.round(reactionY[n6]));
             }
         }
     }
