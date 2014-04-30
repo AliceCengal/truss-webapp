@@ -26,8 +26,7 @@ public class Truss2D {
     BufferedReader dataInput;
     PrintStream dataOutput;
 
-    public Truss2D(final InputStream dataSource, final PrintStream stdout) {
-        this.dataInput = new BufferedReader(new InputStreamReader(dataSource));
+    public Truss2D(final PrintStream stdout) {
         this.dataOutput = stdout;
 
         this.materialData = new LinkedList<Float>();
@@ -39,9 +38,6 @@ public class Truss2D {
     }
 
     public void run() throws IOException, NumberFormatException {
-        if (!this.scanInputData()) {
-            return;
-        }
         if (!this.checkData()) {
             return;
         }
