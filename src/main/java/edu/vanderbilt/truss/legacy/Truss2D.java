@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import edu.vanderbilt.truss.InputStruct;
+import edu.vanderbilt.truss.parser.ParserUtil;
 
 public class Truss2D {
 
@@ -20,29 +20,12 @@ public class Truss2D {
     private static final int SUPPORT_SECTION  = 4;
     private static final int LOAD_SECTION     = 5;
 
-    List<Float> materialData;
-    List<MyPoint> restraintData;
-    int supportRestraintCount;
-    int maxb;
-    double[][] xkMatrix;
-    double[] wVector;
-
-    List<LegacyJoint> joints;
-    List<LegacyMember> members;
-
     LegacyInputStruct input;
     BufferedReader dataInput;
     PrintStream dataOutput;
 
     public Truss2D(final PrintStream stdout) {
         this.dataOutput = stdout;
-
-        this.materialData = new LinkedList<Float>();
-        this.restraintData = new LinkedList<MyPoint>();
-        this.joints = new LinkedList<LegacyJoint>();
-        this.members = new LinkedList<LegacyMember>();
-        this.supportRestraintCount = 0;
-        this.maxb = 0;
     }
 
     /**
@@ -68,7 +51,8 @@ public class Truss2D {
         // for now we use the original parser. I plan to write a new parser to
         // transform the original input sheet into an InputStruct, then feed
         // that into the other injectData method.
-        scanInputData();
+        //scanInputData();
+        this.injectData(ParserUtil.getParser("").parse());
     }
 
     public void injectData(InputStruct newInputStruct) {
@@ -105,14 +89,14 @@ public class Truss2D {
                                 final LegacyJoint joint = new LegacyJoint();
                                 joint.x = jointX;
                                 joint.y = jointY;
-                                convolutedInsert(joints, joint, jointId);
+                                convolutedInsert(input.joints, joint, jointId);
                                 continue;
                             }
                             case MATERIAL_SECTION: {
                                 int materialId = Integer.parseInt(stringTokenizer.nextToken());
                                 --materialId;
                                 final Float elasticity = new Float(stringTokenizer.nextToken());
-                                convolutedInsert(materialData, elasticity, materialId);
+                                convolutedInsert(input.materialData, elasticity, materialId);
                                 continue;
                             }
                             case MEMBER_SECTION: {
@@ -124,13 +108,13 @@ public class Truss2D {
                                 member.j1 = leftJointId - 1;
                                 member.j2 = rightJointId - 1;
                                 member.area = new Float(stringTokenizer.nextToken());
-                                if (this.materialData.size() > 1) {
-                                    member.elasticity = this.materialData.get(
+                                if (input.materialData.size() > 1) {
+                                    member.elasticity = input.materialData.get(
                                             Integer.parseInt(stringTokenizer.nextToken()) - 1);
                                 } else {
-                                    member.elasticity = this.materialData.get(0);
+                                    member.elasticity = input.materialData.get(0);
                                 }
-                                convolutedInsert(members, member, memberId);
+                                convolutedInsert(input.members, member, memberId);
                                 continue;
                             }
                             case SUPPORT_SECTION: {
@@ -140,8 +124,8 @@ public class Truss2D {
                                         new MyPoint(Integer.parseInt(stringTokenizer.nextToken()),
                                                     Integer.parseInt(stringTokenizer.nextToken()));
 
-                                convolutedInsert(restraintData, supportData, jointId);
-                                this.joints.get(jointId).restraint = true;
+                                convolutedInsert(input.restraintData, supportData, jointId);
+                                input.joints.get(jointId).restraint = true;
                                 continue;
                             }
                             case LOAD_SECTION: {
@@ -149,9 +133,9 @@ public class Truss2D {
                                 --jointId;
                                 final Float loadX = new Float(stringTokenizer.nextToken());
                                 final Float loadY = new Float(stringTokenizer.nextToken());
-                                this.joints.get(jointId).wx = loadX;
-                                this.joints.get(jointId).wy = loadY;
-                                this.joints.get(jointId).load = true;
+                                input.joints.get(jointId).wx = loadX;
+                                input.joints.get(jointId).wy = loadY;
+                                input.joints.get(jointId).load = true;
                             }
                         }
                     }
@@ -172,32 +156,32 @@ public class Truss2D {
         }
         //new MyCoord(0.0, 0.0);
         final MyPoint pointNull = new MyPoint(0, 0);
-        for (int i = 0; i < this.restraintData.size(); ++i) {
-            if (this.restraintData.get(i) == null) {
-                this.restraintData.set(i, pointNull);
+        for (int i = 0; i < input.restraintData.size(); ++i) {
+            if (input.restraintData.get(i) == null) {
+                input.restraintData.set(i, pointNull);
             }
         }
-        this.supportRestraintCount = 0;
-        for (int j = 0; j < this.restraintData.size(); ++j) {
-            if (this.restraintData.get(j) != null) {
-                this.supportRestraintCount += restraintData.get(j).x + restraintData.get(j).y;
-                joints.get(j).jrx = restraintData.get(j).x;
-                joints.get(j).jry = restraintData.get(j).y;
+        input.supportRestraintCount = 0;
+        for (int j = 0; j < input.restraintData.size(); ++j) {
+            if (input.restraintData.get(j) != null) {
+                input.supportRestraintCount += input.restraintData.get(j).x + input.restraintData.get(j).y;
+                input.joints.get(j).jrx = input.restraintData.get(j).x;
+                input.joints.get(j).jry = input.restraintData.get(j).y;
             }
         }
         return true;
     }
     
     private boolean checkData() {
-        if (joints.size() < 2) {
+        if (input.joints.size() < 2) {
             this.dataOutput.println("\nDATA ERROR: Need at least 2 Joints.\n\n");
             return false;
         }
-        if (members.size() == 0) {
+        if (input.members.size() == 0) {
             this.dataOutput.println("\nDATA ERROR: No Members.\n\n");
             return false;
         }
-        if (members.size() + this.supportRestraintCount < 2 * joints.size()) {
+        if (input.members.size() + input.supportRestraintCount < 2 * input.joints.size()) {
             this.dataOutput.println("\nDATA ERROR: Unstable truss.\n\n");
             return false;
         }
@@ -206,37 +190,37 @@ public class Truss2D {
     
     @SuppressWarnings("ForLoopReplaceableByForEach")
     private void calculateBWAndDirCos() {
-        for (int i = 0; i < members.size(); ++i) {
-            final int j1 = members.get(i).j1;
-            final int j2 = members.get(i).j2;
+        for (int i = 0; i < input.members.size(); ++i) {
+            final int j1 = input.members.get(i).j1;
+            final int j2 = input.members.get(i).j2;
             final int maxb = 2 * (Math.abs(j2 - j1) + 1);
-            if (maxb > this.maxb) {
-                this.maxb = maxb;
+            if (maxb > input.maxb) {
+                input.maxb = maxb;
             }
-            final double x = joints.get(j1).x;
-            final double y = joints.get(j1).y;
-            final double x2 = joints.get(j2).x;
-            final double y2 = joints.get(j2).y;
+            final double x = input.joints.get(j1).x;
+            final double y = input.joints.get(j1).y;
+            final double x2 = input.joints.get(j2).x;
+            final double y2 = input.joints.get(j2).y;
             final double n = x2 - x;
             final double n2 = y2 - y;
             final double sqrt = Math.sqrt(n * n + n2 * n2);
-            members.get(i).cosx = n / sqrt;
-            members.get(i).cosy = n2 / sqrt;
-            members.get(i).length = sqrt;
+            input.members.get(i).cosx = n / sqrt;
+            input.members.get(i).cosy = n2 / sqrt;
+            input.members.get(i).length = sqrt;
         }
     }
     
     @SuppressWarnings({"MismatchedReadAndWriteOfArray", "ForLoopReplaceableByForEach"})
     private void calculateUnrestrainedStiffnessMx() {
-        this.xkMatrix = new double[2 * joints.size()][this.maxb];
+        input.xkMatrix = new double[2 * input.joints.size()][input.maxb];
         final double[][] array = new double[4][4];
-        for (int i = 0; i < 2 * joints.size(); ++i) {
-            for (int j = 0; j < this.maxb; ++j) {
-                this.xkMatrix[i][j] = 0.0;
+        for (int i = 0; i < 2 * input.joints.size(); ++i) {
+            for (int j = 0; j < input.maxb; ++j) {
+                input.xkMatrix[i][j] = 0.0;
             }
         }
-        for (int k = 0; k < members.size(); ++k) {
-            final LegacyMember member = members.get(k);
+        for (int k = 0; k < input.members.size(); ++k) {
+            final LegacyMember member = input.members.get(k);
             final double n = member.area * member.elasticity / member.length;
             final double n2 = member.cosx * member.cosx * n;
             final double n3 = member.cosy * member.cosy * n;
@@ -261,7 +245,7 @@ public class Truss2D {
                     final int n8 = 2 * (member.j1 + 1) - (2 - n6);
                     final int n9 = 2 * (member.j1 + 1) - (2 - n7) - n8 + 1;
                     if (n9 > 0) {
-                        final double[] array2 = this.xkMatrix[n8 - 1];
+                        final double[] array2 = input.xkMatrix[n8 - 1];
                         final int n10 = n9 - 1;
                         array2[n10] += array[n6 - 1][n7 - 1];
                     }
@@ -272,7 +256,7 @@ public class Truss2D {
                     final int n13 = 2 * (member.j1 + 1) - (2 - n11);
                     final int n14 = 2 * (member.j2 + 1) - (4 - n12) - n13 + 1;
                     if (n14 > 0) {
-                        final double[] array3 = this.xkMatrix[n13 - 1];
+                        final double[] array3 = input.xkMatrix[n13 - 1];
                         final int n15 = n14 - 1;
                         array3[n15] += array[n11 - 1][n12 - 1];
                     }
@@ -283,7 +267,7 @@ public class Truss2D {
                     final int n18 = 2 * (member.j2 + 1) - (4 - n16);
                     final int n19 = 2 * (member.j1 + 1) - (2 - n17) - n18 + 1;
                     if (n19 > 0) {
-                        final double[] array4 = this.xkMatrix[n18 - 1];
+                        final double[] array4 = input.xkMatrix[n18 - 1];
                         final int n20 = n19 - 1;
                         array4[n20] += array[n16 - 1][n17 - 1];
                     }
@@ -294,7 +278,7 @@ public class Truss2D {
                     final int n23 = 2 * (member.j2 + 1) - (4 - n21);
                     final int n24 = 2 * (member.j2 + 1) - (4 - n22) - n23 + 1;
                     if (n24 > 0) {
-                        final double[] array5 = this.xkMatrix[n23 - 1];
+                        final double[] array5 = input.xkMatrix[n23 - 1];
                         final int n25 = n24 - 1;
                         array5[n25] += array[n21 - 1][n22 - 1];
                     }
@@ -305,26 +289,26 @@ public class Truss2D {
     
     private void calculateSupportRestraintsAndFormLoad() {
         final double[] array = new double[2];
-        this.wVector = new double[2 * joints.size()];
-        for (int i = 1; i <= joints.size(); ++i) {
-            final LegacyJoint joint = joints.get(i - 1);
+        input.wVector = new double[2 * input.joints.size()];
+        for (int i = 1; i <= input.joints.size(); ++i) {
+            final LegacyJoint joint = input.joints.get(i - 1);
             array[0] = joint.jrx;
             array[1] = joint.jry;
-            this.wVector[2 * i - 2] = joint.wx;
-            this.wVector[2 * i - 1] = joint.wy;
+            input.wVector[2 * i - 2] = joint.wx;
+            input.wVector[2 * i - 1] = joint.wy;
             for (int j = 1; j <= 2; ++j) {
                 if (array[j - 1] != 0.0) {
                     final int supportRestraintCount = 2 * i - (2 - j);
-                    this.supportRestraintCount = supportRestraintCount;
-                    for (int k = 2; k <= this.maxb; ++k) {
-                        this.xkMatrix[supportRestraintCount - 1][k - 1] = 0.0;
-                        --this.supportRestraintCount;
-                        if (this.supportRestraintCount > 0) {
-                            this.xkMatrix[this.supportRestraintCount - 1][k - 1] = 0.0;
+                    input.supportRestraintCount = supportRestraintCount;
+                    for (int k = 2; k <= input.maxb; ++k) {
+                        input.xkMatrix[supportRestraintCount - 1][k - 1] = 0.0;
+                        --input.supportRestraintCount;
+                        if (input.supportRestraintCount > 0) {
+                            input.xkMatrix[input.supportRestraintCount - 1][k - 1] = 0.0;
                         }
                     }
-                    this.xkMatrix[supportRestraintCount - 1][0] = 1.0;
-                    this.wVector[supportRestraintCount - 1] = 0.0;
+                    input.xkMatrix[supportRestraintCount - 1][0] = 1.0;
+                    input.wVector[supportRestraintCount - 1] = 0.0;
                 }
             }
         }
@@ -332,44 +316,44 @@ public class Truss2D {
     
     @SuppressWarnings("MismatchedReadAndWriteOfArray")
     private void calculateSubstitution() {
-        for (int i = 1; i <= 2 * joints.size(); ++i) {
+        for (int i = 1; i <= 2 * input.joints.size(); ++i) {
             int n = i;
-            if (Math.abs(this.xkMatrix[i - 1][0]) < 1.0E-5) {
+            if (Math.abs(input.xkMatrix[i - 1][0]) < 1.0E-5) {
                 this.dataOutput.println("Unstable!");
                 return;
             }
-            for (int j = 2; j <= this.maxb; ++j) {
+            for (int j = 2; j <= input.maxb; ++j) {
                 ++n;
-                if (this.xkMatrix[i - 1][j - 1] != 0.0) {
-                    final double n2 = this.xkMatrix[i - 1][j - 1] / this.xkMatrix[i - 1][0];
+                if (input.xkMatrix[i - 1][j - 1] != 0.0) {
+                    final double n2 = input.xkMatrix[i - 1][j - 1] / input.xkMatrix[i - 1][0];
                     int n3 = 0;
-                    for (int k = j; k <= this.maxb; ++k) {
+                    for (int k = j; k <= input.maxb; ++k) {
                         ++n3;
-                        if (this.xkMatrix[i - 1][k - 1] != 0.0) {
-                            final double[] array = this.xkMatrix[n - 1];
+                        if (input.xkMatrix[i - 1][k - 1] != 0.0) {
+                            final double[] array = input.xkMatrix[n - 1];
                             final int n4 = n3 - 1;
-                            array[n4] -= n2 * this.xkMatrix[i - 1][k - 1];
+                            array[n4] -= n2 * input.xkMatrix[i - 1][k - 1];
                         }
                     }
-                    this.xkMatrix[i - 1][j - 1] = n2;
-                    final double[] wVector = this.wVector;
+                    input.xkMatrix[i - 1][j - 1] = n2;
+                    final double[] wVector = input.wVector;
                     final int n5 = n - 1;
-                    wVector[n5] -= n2 * this.wVector[i - 1];
+                    wVector[n5] -= n2 * input.wVector[i - 1];
                 }
             }
-            final double[] wVector2 = this.wVector;
+            final double[] wVector2 = input.wVector;
             final int n6 = i - 1;
-            wVector2[n6] /= this.xkMatrix[i - 1][0];
+            wVector2[n6] /= input.xkMatrix[i - 1][0];
         }
-        int n7 = 2 * joints.size();
+        int n7 = 2 * input.joints.size();
         while (--n7 > 0) {
             int n8 = n7;
-            for (int l = 2; l <= this.maxb; ++l) {
+            for (int l = 2; l <= input.maxb; ++l) {
                 ++n8;
-                if (this.xkMatrix[n7 - 1][l - 1] != 0.0) {
-                    final double[] wVector3 = this.wVector;
+                if (input.xkMatrix[n7 - 1][l - 1] != 0.0) {
+                    final double[] wVector3 = input.wVector;
                     final int n9 = n7 - 1;
-                    wVector3[n9] -= this.xkMatrix[n7 - 1][l - 1] * this.wVector[n8 - 1];
+                    wVector3[n9] -= input.xkMatrix[n7 - 1][l - 1] * input.wVector[n8 - 1];
                 }
             }
         }
@@ -377,68 +361,68 @@ public class Truss2D {
     
     @SuppressWarnings({"MismatchedReadAndWriteOfArray", "UnnecessaryLocalVariable"})
     private void calculate() throws IOException {
-        final double[] array = new double[members.size()];
-        for (int i = 1; i <= members.size(); ++i) {
-            final LegacyMember member = members.get(i - 1);
+        final double[] array = new double[input.members.size()];
+        for (int i = 1; i <= input.members.size(); ++i) {
+            final LegacyMember member = input.members.get(i - 1);
             array[i - 1] = member.area * member.elasticity /
                     member.length * (
-                    member.cosx * (this.wVector[2 * (member.j2 + 1) - 2]
-                    - this.wVector[2 * (member.j1 + 1) - 2])
-                    + member.cosy * (this.wVector[2 * (member.j2 + 1) - 1]
-                    - this.wVector[2 * (member.j1 + 1) - 1]));
+                    member.cosx * (input.wVector[2 * (member.j2 + 1) - 2]
+                    - input.wVector[2 * (member.j1 + 1) - 2])
+                    + member.cosy * (input.wVector[2 * (member.j2 + 1) - 1]
+                    - input.wVector[2 * (member.j1 + 1) - 1]));
         }
-        final double[] array2 = new double[joints.size()];
-        final double[] array3 = new double[joints.size()];
-        final double[] array4 = new double[joints.size()];
-        final double[] array5 = new double[joints.size()];
+        final double[] array2 = new double[input.joints.size()];
+        final double[] array3 = new double[input.joints.size()];
+        final double[] array4 = new double[input.joints.size()];
+        final double[] array5 = new double[input.joints.size()];
         final NumberFormatter numberFormatter = new NumberFormatter(10, 3);
         final NumberFormatter numberFormatter2 = new NumberFormatter(10, 6);
-        for (int j = 0; j < joints.size(); ++j) {
-            array4[j] = joints.get(j).jrx;
-            array5[j] = joints.get(j).jry;
+        for (int j = 0; j < input.joints.size(); ++j) {
+            array4[j] = input.joints.get(j).jrx;
+            array5[j] = input.joints.get(j).jry;
             if (array4[j] != 0.0) {
-                array2[j] = -joints.get(j).wx;
+                array2[j] = -input.joints.get(j).wx;
             }
             if (array5[j] != 0.0) {
-                array3[j] = -joints.get(j).wy;
+                array3[j] = -input.joints.get(j).wy;
             }
         }
-        for (int k = 0; k < members.size(); ++k) {
-            final int j2 = members.get(k).j1;
-            final int j3 = members.get(k).j2;
+        for (int k = 0; k < input.members.size(); ++k) {
+            final int j2 = input.members.get(k).j1;
+            final int j3 = input.members.get(k).j2;
             if (array4[j2] != 0.0) {
                 final double[] array6 = array2;
                 final int n = j2;
-                array6[n] -= members.get(k).cosx * array[k];
+                array6[n] -= input.members.get(k).cosx * array[k];
             }
             if (array5[j2] != 0.0) {
                 final double[] array7 = array3;
                 final int n2 = j2;
-                array7[n2] -= members.get(k).cosy * array[k];
+                array7[n2] -= input.members.get(k).cosy * array[k];
             }
             if (array4[j3] != 0.0) {
                 final double[] array8 = array2;
                 final int n3 = j3;
-                array8[n3] += members.get(k).cosx * array[k];
+                array8[n3] += input.members.get(k).cosx * array[k];
             }
             if (array5[j3] != 0.0) {
                 final double[] array9 = array3;
                 final int n4 = j3;
-                array9[n4] += members.get(k).cosy * array[k];
+                array9[n4] += input.members.get(k).cosy * array[k];
             }
         }
         this.dataOutput.println("Joint Displacements:");
-        for (int l = 1; l <= joints.size(); ++l) {
+        for (int l = 1; l <= input.joints.size(); ++l) {
             this.dataOutput.println("\t" + l + "\t" +
-                                            numberFormatter2.round(this.wVector[2 * l - 2]) + "\t" +
-                                            numberFormatter2.round(this.wVector[2 * l - 1]));
+                                            numberFormatter2.round(input.wVector[2 * l - 2]) + "\t" +
+                                            numberFormatter2.round(input.wVector[2 * l - 1]));
         }
         this.dataOutput.println("\nMember Forces:");
-        for (int n5 = 0; n5 < members.size(); ++n5) {
+        for (int n5 = 0; n5 < input.members.size(); ++n5) {
             this.dataOutput.println("\t" + (n5 + 1) + "\t" + numberFormatter.round(array[n5]));
         }
         this.dataOutput.println("\nReactions:");
-        for (int n6 = 0; n6 < joints.size(); ++n6) {
+        for (int n6 = 0; n6 < input.joints.size(); ++n6) {
             if (Math.abs(array2[n6]) < 1.0E-10) {
                 array2[n6] = 0.0;
             }

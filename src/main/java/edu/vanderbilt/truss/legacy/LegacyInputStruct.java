@@ -65,8 +65,8 @@ public class LegacyInputStruct {
             LegacyMember legMember = new LegacyMember();
             legMember.elasticity = member.elasticity();
             legMember.area = member.area();
-            legMember.j1 = member.jointLeft();
-            legMember.j2 = member.jointRight();
+            legMember.j1 = member.jointLeft() - 1;
+            legMember.j2 = member.jointRight() - 1;
             convolutedInsert(old.members,
                              legMember,
                              member.id() - 1);
