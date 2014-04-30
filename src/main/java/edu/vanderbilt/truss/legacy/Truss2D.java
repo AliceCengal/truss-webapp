@@ -37,6 +37,12 @@ public class Truss2D {
         this.maxb = 0;
     }
 
+    /**
+     * Run the calculations. Must be called after `injectData()`
+     *
+     * @throws IOException
+     * @throws NumberFormatException
+     */
     public void run() throws IOException, NumberFormatException {
         if (!this.checkData()) {
             return;
