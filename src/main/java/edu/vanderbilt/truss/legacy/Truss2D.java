@@ -1,14 +1,19 @@
 package edu.vanderbilt.truss.legacy;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
-class Truss2d
-{
-    DataInputStream dataSource;
-    PrintStream stdout;
-    List materialData;
-    List restraintData;
+public class Truss2D {
+
+    List<Float> materialData;
+    List<MyPoint> restraintData;
     int supportRestraintCount;
     int maxb;
     double[][] xkMatrix;
@@ -16,19 +21,15 @@ class Truss2d
 
     List<Joint> joints;
     List<Member> members;
-    InputStreamReader dataInput;
-    OutputStreamWriter dataOutput;
+    BufferedReader dataInput;
+    PrintStream dataOutput;
 
-    Truss2d(final DataInputStream dataSource, final PrintStream stdout) {
-        super();
-        this.dataSource = dataSource;
-        this.stdout = stdout;
+    public Truss2D(final InputStream dataSource, final PrintStream stdout) {
+        this.dataInput = new BufferedReader(new InputStreamReader(dataSource));
+        this.dataOutput = stdout;
 
-        this.dataInput = new InputStreamReader(dataSource);
-        this.dataOutput = new OutputStreamWriter(stdout);
-
-        this.materialData = new LinkedList();
-        this.restraintData = new LinkedList();
+        this.materialData = new LinkedList<Float>();
+        this.restraintData = new LinkedList<MyPoint>();
         this.joints = new LinkedList<Joint>();
         this.members = new LinkedList<Member>();
         this.supportRestraintCount = 0;
@@ -38,15 +39,15 @@ class Truss2d
     private boolean scanInputData() throws IOException, NumberFormatException {
         int n = 0;
         int n2 = 0;
-        this.dataSource.readLine();
+        this.dataInput.readLine();
         ++n2;
-        this.dataSource.readLine();
+        this.dataInput.readLine();
         ++n2;
-        this.dataSource.readLine();
+        this.dataInput.readLine();
         ++n2;
         try {
-            while (this.dataSource.available() > 0) {
-                final String line = this.dataSource.readLine();
+            while (this.dataInput.ready()) {
+                final String line = this.dataInput.readLine();
                 ++n2;
                 if (line.length() != 0) {
                     if (!Character.isDigit(line.charAt(0))) {
@@ -66,21 +67,24 @@ class Truss2d
                                 final Joint obj = new Joint();
                                 obj.x = n3;
                                 obj.y = n4;
-                                if (joints.size() < int1 + 1) {
-                                    //joints.setSize(int1 + 1);
-                                }
-                                joints.set(int1, obj);
+                                //if (joints.size() < int1 + 1) {
+                                //    joints.setSize(int1 + 1);
+                                //}
+                                //joints.set(int1, obj);
                                 //joints.setElementAt(obj, int1);
+                                convolutedInsert(joints, obj, int1);
                                 continue;
                             }
                             case 2: {
                                 int int2 = Integer.parseInt(stringTokenizer.nextToken());
                                 --int2;
                                 final Float obj2 = new Float(stringTokenizer.nextToken());
-                                if (this.materialData.size() < int2 + 1) {
-                                    this.materialData.setSize(int2 + 1);
-                                }
-                                this.materialData.setElementAt(obj2, int2);
+                                //if (this.materialData.size() < int2 + 1) {
+                                    //this.materialData.setSize(int2 + 1);
+                                //}
+                                //materialData.set(int2, obj2);
+                                //this.materialData.setElementAt(obj2, int2);
+                                convolutedInsert(materialData, obj2, int2);
                                 continue;
                             }
                             case 3: {
@@ -93,26 +97,29 @@ class Truss2d
                                 obj3.j2 = n6 - 1;
                                 obj3.area = new Float(stringTokenizer.nextToken());
                                 if (this.materialData.size() > 1) {
-                                    obj3.elasticity = this.materialData.elementAt(new Integer(stringTokenizer.nextToken()) - 1);
+                                    obj3.elasticity = this.materialData.get(new Integer(stringTokenizer.nextToken()) - 1);
                                 }
                                 else {
-                                    obj3.elasticity = this.materialData.elementAt(0);
+                                    obj3.elasticity = this.materialData.get(0);
                                 }
-                                if (((Vector)super.members).size() < int3 + 1) {
-                                    ((Vector)super.members).setSize(int3 + 1);
-                                }
-                                ((Vector<Member>)super.members).setElementAt(obj3, int3);
+                                //if (((Vector)super.members).size() < int3 + 1) {
+                                //    ((Vector)super.members).setSize(int3 + 1);
+                                //}
+                                //this.members.set(int3, obj3);
+                                convolutedInsert(members, obj3, int3);
                                 continue;
                             }
                             case 4: {
                                 int int4 = Integer.parseInt(stringTokenizer.nextToken());
                                 --int4;
-                                final MyPoint obj4 = new MyPoint((int)new Integer(stringTokenizer.nextToken()), (int)new Integer(stringTokenizer.nextToken()));
-                                if (this.restraintData.size() < int4 + 1) {
-                                    this.restraintData.setSize(int4 + 1);
-                                }
-                                this.restraintData.setElementAt(obj4, int4);
-                                super.joints.jointAt(int4).restraint = true;
+                                final MyPoint obj4 = new MyPoint(Integer.parseInt(stringTokenizer.nextToken()),
+                                                                 Integer.parseInt(stringTokenizer.nextToken()));
+                                //if (this.restraintData.size() < int4 + 1) {
+                                //    this.restraintData.setSize(int4 + 1);
+                                //}
+                                //this.restraintData.set(int4, obj4);
+                                convolutedInsert(restraintData, obj4, int4);
+                                this.joints.get(int4).restraint = true;
                                 continue;
                             }
                             case 5: {
@@ -120,10 +127,9 @@ class Truss2d
                                 --int5;
                                 final Float n7 = new Float(stringTokenizer.nextToken());
                                 final Float n8 = new Float(stringTokenizer.nextToken());
-                                super.joints.jointAt(int5).wx = n7;
-                                super.joints.jointAt(int5).wy = n8;
-                                super.joints.jointAt(int5).load = true;
-                                continue;
+                                this.joints.get(int5).wx = n7;
+                                this.joints.get(int5).wy = n8;
+                                this.joints.get(int5).load = true;
                             }
                         }
                     }
@@ -131,82 +137,82 @@ class Truss2d
             }
         }
         catch (NumberFormatException ex) {
-            this.stdout.println("\nDATA ERROR: Wrong input in line: " + n2 + "! ");
+            this.dataOutput.println("\nDATA ERROR: Wrong input in line: " + n2 + "! ");
             return false;
         }
         catch (NoSuchElementException ex2) {
-            this.stdout.println("\nDATA ERROR: Missing input in line: " + n2 + "! ");
+            this.dataOutput.println("\nDATA ERROR: Missing input in line: " + n2 + "! ");
             return false;
         }
         if (n != 5) {
-            this.stdout.println("\nDATA ERROR: Missing input data at end of file!\n");
+            this.dataOutput.println("\nDATA ERROR: Missing input data at end of file!\n");
             return false;
         }
         new MyCoord(0.0, 0.0);
         final MyPoint obj5 = new MyPoint(0, 0);
         for (int i = 0; i < this.restraintData.size(); ++i) {
-            if (this.restraintData.elementAt(i) == null) {
-                this.restraintData.setElementAt(obj5, i);
+            if (this.restraintData.get(i) == null) {
+                this.restraintData.set(i, obj5);
             }
         }
         this.supportRestraintCount = 0;
         for (int j = 0; j < this.restraintData.size(); ++j) {
-            if (this.restraintData.elementAt(j) != null) {
-                this.supportRestraintCount += ((MyPoint)this.restraintData.elementAt(j)).x + ((MyPoint)this.restraintData.elementAt(j)).y;
-                super.joints.jointAt(j).jrx = ((MyPoint)this.restraintData.elementAt(j)).x;
-                super.joints.jointAt(j).jry = ((MyPoint)this.restraintData.elementAt(j)).y;
+            if (this.restraintData.get(j) != null) {
+                this.supportRestraintCount += restraintData.get(j).x + restraintData.get(j).y;
+                joints.get(j).jrx = restraintData.get(j).x;
+                joints.get(j).jry = restraintData.get(j).y;
             }
         }
         return true;
     }
     
     private boolean checkData() {
-        if (((Vector)super.joints).size() < 2) {
-            this.stdout.println("\nDATA ERROR: Need at least 2 Joints.\n\n");
+        if (joints.size() < 2) {
+            this.dataOutput.println("\nDATA ERROR: Need at least 2 Joints.\n\n");
             return false;
         }
-        if (((Vector)super.members).size() == 0) {
-            this.stdout.println("\nDATA ERROR: No Members.\n\n");
+        if (members.size() == 0) {
+            this.dataOutput.println("\nDATA ERROR: No Members.\n\n");
             return false;
         }
-        if (((Vector)super.members).size() + this.supportRestraintCount < 2 * ((Vector)super.joints).size()) {
-            this.stdout.println("\nDATA ERROR: Unstable truss.\n\n");
+        if (members.size() + this.supportRestraintCount < 2 * joints.size()) {
+            this.dataOutput.println("\nDATA ERROR: Unstable truss.\n\n");
             return false;
         }
         return true;
     }
     
     private void calculateBWAndDirCos() {
-        for (int i = 0; i < ((Vector)super.members).size(); ++i) {
-            final int j1 = super.members.memberAt(i).j1;
-            final int j2 = super.members.memberAt(i).j2;
+        for (int i = 0; i < members.size(); ++i) {
+            final int j1 = members.get(i).j1;
+            final int j2 = members.get(i).j2;
             final int maxb = 2 * (Math.abs(j2 - j1) + 1);
             if (maxb > this.maxb) {
                 this.maxb = maxb;
             }
-            final double x = super.joints.jointAt(j1).x;
-            final double y = super.joints.jointAt(j1).y;
-            final double x2 = super.joints.jointAt(j2).x;
-            final double y2 = super.joints.jointAt(j2).y;
+            final double x = joints.get(j1).x;
+            final double y = joints.get(j1).y;
+            final double x2 = joints.get(j2).x;
+            final double y2 = joints.get(j2).y;
             final double n = x2 - x;
             final double n2 = y2 - y;
             final double sqrt = Math.sqrt(n * n + n2 * n2);
-            super.members.memberAt(i).cosx = n / sqrt;
-            super.members.memberAt(i).cosy = n2 / sqrt;
-            super.members.memberAt(i).length = sqrt;
+            members.get(i).cosx = n / sqrt;
+            members.get(i).cosy = n2 / sqrt;
+            members.get(i).length = sqrt;
         }
     }
     
     private void calculateUnrestrainedStiffnessMx() {
-        this.xkMatrix = new double[2 * ((Vector)super.joints).size()][this.maxb];
+        this.xkMatrix = new double[2 * joints.size()][this.maxb];
         final double[][] array = new double[4][4];
-        for (int i = 0; i < 2 * ((Vector)super.joints).size(); ++i) {
+        for (int i = 0; i < 2 * joints.size(); ++i) {
             for (int j = 0; j < this.maxb; ++j) {
                 this.xkMatrix[i][j] = 0.0;
             }
         }
-        for (int k = 0; k < ((Vector)super.members).size(); ++k) {
-            final Member member = super.members.memberAt(k);
+        for (int k = 0; k < members.size(); ++k) {
+            final Member member = members.get(k);
             final double n = member.area * member.elasticity / member.length;
             final double n2 = member.cosx * member.cosx * n;
             final double n3 = member.cosy * member.cosy * n;
@@ -275,9 +281,9 @@ class Truss2d
     
     private void calculateSupportRestraintsAndFormLoad() {
         final double[] array = new double[2];
-        this.wVector = new double[2 * ((Vector)super.joints).size()];
-        for (int i = 1; i <= ((Vector)super.joints).size(); ++i) {
-            final Joint joint = super.joints.jointAt(i - 1);
+        this.wVector = new double[2 * joints.size()];
+        for (int i = 1; i <= joints.size(); ++i) {
+            final Joint joint = joints.get(i - 1);
             array[0] = joint.jrx;
             array[1] = joint.jry;
             this.wVector[2 * i - 2] = joint.wx;
@@ -301,10 +307,10 @@ class Truss2d
     }
     
     private void calculateSubstitution() {
-        for (int i = 1; i <= 2 * ((Vector)super.joints).size(); ++i) {
+        for (int i = 1; i <= 2 * joints.size(); ++i) {
             int n = i;
             if (Math.abs(this.xkMatrix[i - 1][0]) < 1.0E-5) {
-                this.stdout.println("Unstable!");
+                this.dataOutput.println("Unstable!");
                 return;
             }
             for (int j = 2; j <= this.maxb; ++j) {
@@ -330,7 +336,7 @@ class Truss2d
             final int n6 = i - 1;
             wVector2[n6] /= this.xkMatrix[i - 1][0];
         }
-        int n7 = 2 * ((Vector)super.joints).size();
+        int n7 = 2 * joints.size();
         while (--n7 > 0) {
             int n8 = n7;
             for (int l = 2; l <= this.maxb; ++l) {
@@ -344,62 +350,62 @@ class Truss2d
         }
     }
     
-    private void calculate() {
-        final double[] array = new double[((Vector)super.members).size()];
-        for (int i = 1; i <= ((Vector)super.members).size(); ++i) {
-            final Member member = super.members.memberAt(i - 1);
+    private void calculate() throws IOException {
+        final double[] array = new double[members.size()];
+        for (int i = 1; i <= members.size(); ++i) {
+            final Member member = members.get(i - 1);
             array[i - 1] = member.area * member.elasticity / member.length * (member.cosx * (this.wVector[2 * (member.j2 + 1) - 2] - this.wVector[2 * (member.j1 + 1) - 2]) + member.cosy * (this.wVector[2 * (member.j2 + 1) - 1] - this.wVector[2 * (member.j1 + 1) - 1]));
         }
-        final double[] array2 = new double[((Vector)super.joints).size()];
-        final double[] array3 = new double[((Vector)super.joints).size()];
-        final double[] array4 = new double[((Vector)super.joints).size()];
-        final double[] array5 = new double[((Vector)super.joints).size()];
+        final double[] array2 = new double[joints.size()];
+        final double[] array3 = new double[joints.size()];
+        final double[] array4 = new double[joints.size()];
+        final double[] array5 = new double[joints.size()];
         final NumberFormatter numberFormatter = new NumberFormatter(10, 3);
         final NumberFormatter numberFormatter2 = new NumberFormatter(10, 6);
-        for (int j = 0; j < ((Vector)super.joints).size(); ++j) {
-            array4[j] = super.joints.jointAt(j).jrx;
-            array5[j] = super.joints.jointAt(j).jry;
+        for (int j = 0; j < joints.size(); ++j) {
+            array4[j] = joints.get(j).jrx;
+            array5[j] = joints.get(j).jry;
             if (array4[j] != 0.0) {
-                array2[j] = -super.joints.jointAt(j).wx;
+                array2[j] = -joints.get(j).wx;
             }
             if (array5[j] != 0.0) {
-                array3[j] = -super.joints.jointAt(j).wy;
+                array3[j] = -joints.get(j).wy;
             }
         }
-        for (int k = 0; k < ((Vector)super.members).size(); ++k) {
-            final int j2 = super.members.memberAt(k).j1;
-            final int j3 = super.members.memberAt(k).j2;
+        for (int k = 0; k < members.size(); ++k) {
+            final int j2 = members.get(k).j1;
+            final int j3 = members.get(k).j2;
             if (array4[j2] != 0.0) {
                 final double[] array6 = array2;
                 final int n = j2;
-                array6[n] -= super.members.memberAt(k).cosx * array[k];
+                array6[n] -= members.get(k).cosx * array[k];
             }
             if (array5[j2] != 0.0) {
                 final double[] array7 = array3;
                 final int n2 = j2;
-                array7[n2] -= super.members.memberAt(k).cosy * array[k];
+                array7[n2] -= members.get(k).cosy * array[k];
             }
             if (array4[j3] != 0.0) {
                 final double[] array8 = array2;
                 final int n3 = j3;
-                array8[n3] += super.members.memberAt(k).cosx * array[k];
+                array8[n3] += members.get(k).cosx * array[k];
             }
             if (array5[j3] != 0.0) {
                 final double[] array9 = array3;
                 final int n4 = j3;
-                array9[n4] += super.members.memberAt(k).cosy * array[k];
+                array9[n4] += members.get(k).cosy * array[k];
             }
         }
-        this.stdout.println("Joint Displacements:");
-        for (int l = 1; l <= ((Vector)super.joints).size(); ++l) {
-            this.stdout.println("\t" + l + "\t" + numberFormatter2.round(this.wVector[2 * l - 2]) + "\t" + numberFormatter2.round(this.wVector[2 * l - 1]));
+        this.dataOutput.println("Joint Displacements:");
+        for (int l = 1; l <= joints.size(); ++l) {
+            this.dataOutput.println("\t" + l + "\t" + numberFormatter2.round(this.wVector[2 * l - 2]) + "\t" + numberFormatter2.round(this.wVector[2 * l - 1]));
         }
-        this.stdout.println("\nMember Forces:");
-        for (int n5 = 0; n5 < ((Vector)super.members).size(); ++n5) {
-            this.stdout.println("\t" + (n5 + 1) + "\t" + numberFormatter.round(array[n5]));
+        this.dataOutput.println("\nMember Forces:");
+        for (int n5 = 0; n5 < members.size(); ++n5) {
+            this.dataOutput.println("\t" + (n5 + 1) + "\t" + numberFormatter.round(array[n5]));
         }
-        this.stdout.println("\nReactions:");
-        for (int n6 = 0; n6 < ((Vector)super.joints).size(); ++n6) {
+        this.dataOutput.println("\nReactions:");
+        for (int n6 = 0; n6 < joints.size(); ++n6) {
             if (Math.abs(array2[n6]) < 1.0E-10) {
                 array2[n6] = 0.0;
             }
@@ -407,7 +413,7 @@ class Truss2d
                 array3[n6] = 0.0;
             }
             if (array2[n6] != 0.0 || array3[n6] != 0.0) {
-                this.stdout.println("\t" + (n6 + 1) + "\t" + numberFormatter.round(array2[n6]) + "\t" + numberFormatter.round(array3[n6]));
+                this.dataOutput.println("\t" + (n6 + 1) + "\t" + numberFormatter.round(array2[n6]) + "\t" + numberFormatter.round(array3[n6]));
             }
         }
     }
@@ -425,4 +431,20 @@ class Truss2d
         this.calculateSubstitution();
         this.calculate();
     }
+
+    private static <U> void convolutedInsert(List<U> list, U element, int index) {
+        // assume index >= 0
+        if (index < list.size()) {
+            list.set(index, element);
+
+        } else {
+            for (int fillerIndex = list.size();
+                    fillerIndex < index;
+                    ++fillerIndex) {
+                list.add(null);
+            }
+            list.add(element);
+        }
+    }
+
 }

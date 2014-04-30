@@ -1,25 +1,64 @@
 package edu.vanderbilt.truss
 
-import edu.vanderbilt.truss.engine.EngineUtil
+import java.io.{IOException, File, FileInputStream}
+
+import scala.collection.JavaConverters._
+
 import edu.vanderbilt.truss.parser.ParserUtil
-import edu.vanderbilt.truss.reporter.ReporterUtil
+import edu.vanderbilt.truss.legacy.Truss2D
+import scala.io.Source
+
 
 object TrussApp extends App {
   println("===============================================================")
-  println("|           Truss Webapp                                      |")
+  println("|                         Truss Webapp                        |")
   println("===============================================================")
   println()
 
+  legacyTest()
+
+  def legacyTest() {
+
+    for (
+      line <- Source.fromFile(openInputSet).getLines()
+    ) {
+      println(line)
+    }
+    println()
+
+    val dataSource = new FileInputStream(
+        new File(getClass.getResource("/sample_input_set.txt").getPath))
+
+    val legacyEngine = new Truss2D(dataSource,
+                                   System.out)
+    try {
+      legacyEngine.run()
+
+      println()
+      println("Legacy test successful")
+    } catch {
+      case e: IOException =>
+        println("Parsing fail")
+        println(e.getMessage)
+      case e: NumberFormatException =>
+        println("Numerical fail")
+        println(e.getMessage)
+    }
+  }
+
+  def openInputSet = new File(getClass.getResource("/sample_input_set.txt").getPath)
+
+  def ERROR = "| ERROR | "
 
   // run tests for the Parser and the Reporter. If both pass,
   // run test for Engine, otherwise don't.
-  if ((parserTest() || reporterTest()) && engineTest()) {
-    println("| SUCCESS | All test passed")
-  } else {
-    println("| FAILURE | Please try again")
+  def runComponentTest() {
+    if ((parserTest() || reporterTest()) && engineTest()) {
+      println("| SUCCESS | All test passed")
+    } else {
+      println("| FAILURE | Please try again")
+    }
   }
-
-  def ERROR = "| ERROR | "
 
   def parserTest(): Boolean = {
     println("Running Parser test")
@@ -60,7 +99,7 @@ object TrussApp extends App {
       return false
     }
 
-    for (joint <- input.joints()) {
+    for (joint <- input.joints().asScala) {
       println(joint)
     }
 
