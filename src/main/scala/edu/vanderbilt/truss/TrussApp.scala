@@ -3,11 +3,10 @@ package edu.vanderbilt.truss
 import java.io.{IOException, File, FileInputStream}
 
 import scala.collection.JavaConverters._
+import scala.io.Source
 
 import edu.vanderbilt.truss.parser.ParserUtil
 import edu.vanderbilt.truss.legacy.Truss2D
-import scala.io.Source
-
 
 object TrussApp extends App {
   println("===============================================================")

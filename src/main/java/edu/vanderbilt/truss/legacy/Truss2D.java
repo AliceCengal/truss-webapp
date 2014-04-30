@@ -67,11 +67,6 @@ public class Truss2D {
                                 final Joint obj = new Joint();
                                 obj.x = n3;
                                 obj.y = n4;
-                                //if (joints.size() < int1 + 1) {
-                                //    joints.setSize(int1 + 1);
-                                //}
-                                //joints.set(int1, obj);
-                                //joints.setElementAt(obj, int1);
                                 convolutedInsert(joints, obj, int1);
                                 continue;
                             }
@@ -79,11 +74,6 @@ public class Truss2D {
                                 int int2 = Integer.parseInt(stringTokenizer.nextToken());
                                 --int2;
                                 final Float obj2 = new Float(stringTokenizer.nextToken());
-                                //if (this.materialData.size() < int2 + 1) {
-                                    //this.materialData.setSize(int2 + 1);
-                                //}
-                                //materialData.set(int2, obj2);
-                                //this.materialData.setElementAt(obj2, int2);
                                 convolutedInsert(materialData, obj2, int2);
                                 continue;
                             }
@@ -98,14 +88,9 @@ public class Truss2D {
                                 obj3.area = new Float(stringTokenizer.nextToken());
                                 if (this.materialData.size() > 1) {
                                     obj3.elasticity = this.materialData.get(new Integer(stringTokenizer.nextToken()) - 1);
-                                }
-                                else {
+                                } else {
                                     obj3.elasticity = this.materialData.get(0);
                                 }
-                                //if (((Vector)super.members).size() < int3 + 1) {
-                                //    ((Vector)super.members).setSize(int3 + 1);
-                                //}
-                                //this.members.set(int3, obj3);
                                 convolutedInsert(members, obj3, int3);
                                 continue;
                             }
@@ -114,10 +99,7 @@ public class Truss2D {
                                 --int4;
                                 final MyPoint obj4 = new MyPoint(Integer.parseInt(stringTokenizer.nextToken()),
                                                                  Integer.parseInt(stringTokenizer.nextToken()));
-                                //if (this.restraintData.size() < int4 + 1) {
-                                //    this.restraintData.setSize(int4 + 1);
-                                //}
-                                //this.restraintData.set(int4, obj4);
+
                                 convolutedInsert(restraintData, obj4, int4);
                                 this.joints.get(int4).restraint = true;
                                 continue;
