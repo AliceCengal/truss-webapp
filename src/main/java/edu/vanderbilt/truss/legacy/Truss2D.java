@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
+import edu.vanderbilt.truss.InputStruct;
+
 public class Truss2D {
 
     List<Float> materialData;
@@ -19,8 +21,8 @@ public class Truss2D {
     double[][] xkMatrix;
     double[] wVector;
 
-    List<Joint> joints;
-    List<Member> members;
+    List<LegacyJoint> joints;
+    List<LegacyMember> members;
     BufferedReader dataInput;
     PrintStream dataOutput;
 
@@ -30,12 +32,35 @@ public class Truss2D {
 
         this.materialData = new LinkedList<Float>();
         this.restraintData = new LinkedList<MyPoint>();
-        this.joints = new LinkedList<Joint>();
-        this.members = new LinkedList<Member>();
+        this.joints = new LinkedList<LegacyJoint>();
+        this.members = new LinkedList<LegacyMember>();
         this.supportRestraintCount = 0;
         this.maxb = 0;
     }
-    
+
+    public void run() throws IOException, NumberFormatException {
+        if (!this.scanInputData()) {
+            return;
+        }
+        if (!this.checkData()) {
+            return;
+        }
+        this.calculateBWAndDirCos();
+        this.calculateUnrestrainedStiffnessMx();
+        this.calculateSupportRestraintsAndFormLoad();
+        this.calculateSubstitution();
+        this.calculate();
+    }
+
+    public void injectData(InputStream dataSource) throws IOException, NumberFormatException {
+        dataInput = new BufferedReader(new InputStreamReader(dataSource));
+        scanInputData();
+    }
+
+    public void injectData(InputStruct inputStruct) {
+
+    }
+
     private boolean scanInputData() throws IOException, NumberFormatException {
         int n = 0;
         int n2 = 0;
@@ -64,7 +89,7 @@ public class Truss2D {
                                 --int1;
                                 final Float n3 = new Float(stringTokenizer.nextToken());
                                 final Float n4 = new Float(stringTokenizer.nextToken());
-                                final Joint obj = new Joint();
+                                final LegacyJoint obj = new LegacyJoint();
                                 obj.x = n3;
                                 obj.y = n4;
                                 convolutedInsert(joints, obj, int1);
@@ -82,7 +107,7 @@ public class Truss2D {
                                 --int3;
                                 final Integer n5 = new Integer(stringTokenizer.nextToken());
                                 final Integer n6 = new Integer(stringTokenizer.nextToken());
-                                final Member obj3 = new Member();
+                                final LegacyMember obj3 = new LegacyMember();
                                 obj3.j1 = n5 - 1;
                                 obj3.j2 = n6 - 1;
                                 obj3.area = new Float(stringTokenizer.nextToken());
@@ -196,7 +221,7 @@ public class Truss2D {
             }
         }
         for (int k = 0; k < members.size(); ++k) {
-            final Member member = members.get(k);
+            final LegacyMember member = members.get(k);
             final double n = member.area * member.elasticity / member.length;
             final double n2 = member.cosx * member.cosx * n;
             final double n3 = member.cosy * member.cosy * n;
@@ -267,7 +292,7 @@ public class Truss2D {
         final double[] array = new double[2];
         this.wVector = new double[2 * joints.size()];
         for (int i = 1; i <= joints.size(); ++i) {
-            final Joint joint = joints.get(i - 1);
+            final LegacyJoint joint = joints.get(i - 1);
             array[0] = joint.jrx;
             array[1] = joint.jry;
             this.wVector[2 * i - 2] = joint.wx;
@@ -339,7 +364,7 @@ public class Truss2D {
     private void calculate() throws IOException {
         final double[] array = new double[members.size()];
         for (int i = 1; i <= members.size(); ++i) {
-            final Member member = members.get(i - 1);
+            final LegacyMember member = members.get(i - 1);
             array[i - 1] = member.area * member.elasticity / member.length * (member.cosx * (this.wVector[2 * (member.j2 + 1) - 2] - this.wVector[2 * (member.j1 + 1) - 2]) + member.cosy * (this.wVector[2 * (member.j2 + 1) - 1] - this.wVector[2 * (member.j1 + 1) - 1]));
         }
         final double[] array2 = new double[joints.size()];
@@ -404,19 +429,7 @@ public class Truss2D {
         }
     }
     
-    public void run() throws IOException, NumberFormatException {
-        if (!this.scanInputData()) {
-            return;
-        }
-        if (!this.checkData()) {
-            return;
-        }
-        this.calculateBWAndDirCos();
-        this.calculateUnrestrainedStiffnessMx();
-        this.calculateSupportRestraintsAndFormLoad();
-        this.calculateSubstitution();
-        this.calculate();
-    }
+
 
     private static <U> void convolutedInsert(List<U> list, U element, int index) {
         // assume index >= 0

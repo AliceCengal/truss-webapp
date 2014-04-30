@@ -1,6 +1,6 @@
 package edu.vanderbilt.truss.legacy;
 
-class Joint {
+class LegacyJoint {
     public double x;
     public double y;
     public int jrx;
@@ -10,7 +10,7 @@ class Joint {
     public boolean load;
     public boolean restraint;
 
-    public Joint() {
+    public LegacyJoint() {
         super();
         this.x = 0.0;
         this.y = 0.0;

@@ -1,6 +1,6 @@
 package edu.vanderbilt.truss.legacy;
 
-class Member {
+class LegacyMember {
     public int j1;
     public int j2;
     public double area;
@@ -10,7 +10,7 @@ class Member {
     public double length;
     public double sinx;
 
-    public Member() {
+    public LegacyMember() {
         super();
         this.j1 = 0;
         this.j2 = 0;
