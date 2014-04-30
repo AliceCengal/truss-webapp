@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import edu.vanderbilt.truss.InputStruct;
+import edu.vanderbilt.truss.Joint;
 
 public class Truss2D {
 
@@ -56,11 +57,17 @@ public class Truss2D {
 
     public void injectData(InputStream dataSource) throws IOException, NumberFormatException {
         dataInput = new BufferedReader(new InputStreamReader(dataSource));
+
+        // for now we use the original parser. I plan to write a new parser to
+        // transform the original input sheet into an InputStruct, then feed
+        // that into the other injectData method.
         scanInputData();
     }
 
     public void injectData(InputStruct inputStruct) {
+        for (Joint joint : inputStruct.joints()) {
 
+        }
     }
 
     private boolean scanInputData() throws IOException, NumberFormatException {
