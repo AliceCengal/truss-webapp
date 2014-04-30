@@ -14,6 +14,12 @@ import edu.vanderbilt.truss.InputStruct;
 
 public class Truss2D {
 
+    private static final int JOINT_SECTION    = 1;
+    private static final int MATERIAL_SECTION = 2;
+    private static final int MEMBER_SECTION   = 3;
+    private static final int SUPPORT_SECTION  = 4;
+    private static final int LOAD_SECTION     = 5;
+
     List<Float> materialData;
     List<MyPoint> restraintData;
     int supportRestraintCount;
@@ -23,6 +29,8 @@ public class Truss2D {
 
     List<LegacyJoint> joints;
     List<LegacyMember> members;
+
+    LegacyInputStruct input;
     BufferedReader dataInput;
     PrintStream dataOutput;
 
@@ -63,88 +71,87 @@ public class Truss2D {
         scanInputData();
     }
 
-    public void injectData(InputStruct inputStruct) {
-
+    public void injectData(InputStruct newInputStruct) {
+        input = LegacyInputStruct.createFromNewStruct(newInputStruct);
     }
 
     private boolean scanInputData() throws IOException, NumberFormatException {
-        int n = 0;
-        int n2 = 0;
+        int sectionIndex = 0;
+        int sourceLine = 0;
         this.dataInput.readLine();
-        ++n2;
+        ++sourceLine;
         this.dataInput.readLine();
-        ++n2;
+        ++sourceLine;
         this.dataInput.readLine();
-        ++n2;
+        ++sourceLine;
         try {
             while (this.dataInput.ready()) {
                 final String line = this.dataInput.readLine();
-                ++n2;
+                ++sourceLine;
                 if (line.length() != 0) {
                     if (!Character.isDigit(line.charAt(0))) {
-                        ++n;
-                    }
-                    else {
+                        ++sectionIndex;
+                    } else {
                         final StringTokenizer stringTokenizer = new StringTokenizer(line, ", ");
-                        switch (n) {
+                        switch (sectionIndex) {
                             default: {
                                 continue;
                             }
-                            case 1: {
-                                int int1 = Integer.parseInt(stringTokenizer.nextToken());
-                                --int1;
-                                final Float n3 = new Float(stringTokenizer.nextToken());
-                                final Float n4 = new Float(stringTokenizer.nextToken());
-                                final LegacyJoint obj = new LegacyJoint();
-                                obj.x = n3;
-                                obj.y = n4;
-                                convolutedInsert(joints, obj, int1);
+                            case JOINT_SECTION: {
+                                int jointId = Integer.parseInt(stringTokenizer.nextToken());
+                                --jointId;
+                                final Float jointX = new Float(stringTokenizer.nextToken());
+                                final Float jointY = new Float(stringTokenizer.nextToken());
+                                final LegacyJoint joint = new LegacyJoint();
+                                joint.x = jointX;
+                                joint.y = jointY;
+                                convolutedInsert(joints, joint, jointId);
                                 continue;
                             }
-                            case 2: {
-                                int int2 = Integer.parseInt(stringTokenizer.nextToken());
-                                --int2;
-                                final Float obj2 = new Float(stringTokenizer.nextToken());
-                                convolutedInsert(materialData, obj2, int2);
+                            case MATERIAL_SECTION: {
+                                int materialId = Integer.parseInt(stringTokenizer.nextToken());
+                                --materialId;
+                                final Float elasticity = new Float(stringTokenizer.nextToken());
+                                convolutedInsert(materialData, elasticity, materialId);
                                 continue;
                             }
-                            case 3: {
-                                int int3 = Integer.parseInt(stringTokenizer.nextToken());
-                                --int3;
-                                final Integer n5 = new Integer(stringTokenizer.nextToken());
-                                final Integer n6 = new Integer(stringTokenizer.nextToken());
-                                final LegacyMember obj3 = new LegacyMember();
-                                obj3.j1 = n5 - 1;
-                                obj3.j2 = n6 - 1;
-                                obj3.area = new Float(stringTokenizer.nextToken());
+                            case MEMBER_SECTION: {
+                                int memberId = Integer.parseInt(stringTokenizer.nextToken());
+                                --memberId;
+                                final Integer leftJointId = new Integer(stringTokenizer.nextToken());
+                                final Integer rightJointId = new Integer(stringTokenizer.nextToken());
+                                final LegacyMember member = new LegacyMember();
+                                member.j1 = leftJointId - 1;
+                                member.j2 = rightJointId - 1;
+                                member.area = new Float(stringTokenizer.nextToken());
                                 if (this.materialData.size() > 1) {
-                                    obj3.elasticity = this.materialData.get(
+                                    member.elasticity = this.materialData.get(
                                             Integer.parseInt(stringTokenizer.nextToken()) - 1);
                                 } else {
-                                    obj3.elasticity = this.materialData.get(0);
+                                    member.elasticity = this.materialData.get(0);
                                 }
-                                convolutedInsert(members, obj3, int3);
+                                convolutedInsert(members, member, memberId);
                                 continue;
                             }
-                            case 4: {
-                                int int4 = Integer.parseInt(stringTokenizer.nextToken());
-                                --int4;
-                                final MyPoint obj4 =
+                            case SUPPORT_SECTION: {
+                                int jointId = Integer.parseInt(stringTokenizer.nextToken());
+                                --jointId;
+                                final MyPoint supportData =
                                         new MyPoint(Integer.parseInt(stringTokenizer.nextToken()),
                                                     Integer.parseInt(stringTokenizer.nextToken()));
 
-                                convolutedInsert(restraintData, obj4, int4);
-                                this.joints.get(int4).restraint = true;
+                                convolutedInsert(restraintData, supportData, jointId);
+                                this.joints.get(jointId).restraint = true;
                                 continue;
                             }
-                            case 5: {
-                                int int5 = Integer.parseInt(stringTokenizer.nextToken());
-                                --int5;
-                                final Float n7 = new Float(stringTokenizer.nextToken());
-                                final Float n8 = new Float(stringTokenizer.nextToken());
-                                this.joints.get(int5).wx = n7;
-                                this.joints.get(int5).wy = n8;
-                                this.joints.get(int5).load = true;
+                            case LOAD_SECTION: {
+                                int jointId = Integer.parseInt(stringTokenizer.nextToken());
+                                --jointId;
+                                final Float loadX = new Float(stringTokenizer.nextToken());
+                                final Float loadY = new Float(stringTokenizer.nextToken());
+                                this.joints.get(jointId).wx = loadX;
+                                this.joints.get(jointId).wy = loadY;
+                                this.joints.get(jointId).load = true;
                             }
                         }
                     }
@@ -152,22 +159,22 @@ public class Truss2D {
             }
         }
         catch (NumberFormatException ex) {
-            this.dataOutput.println("\nDATA ERROR: Wrong input in line: " + n2 + "! ");
+            this.dataOutput.println("\nDATA ERROR: Wrong input in line: " + sourceLine + "! ");
             return false;
         }
         catch (NoSuchElementException ex2) {
-            this.dataOutput.println("\nDATA ERROR: Missing input in line: " + n2 + "! ");
+            this.dataOutput.println("\nDATA ERROR: Missing input in line: " + sourceLine + "! ");
             return false;
         }
-        if (n != 5) {
+        if (sectionIndex != 5) {
             this.dataOutput.println("\nDATA ERROR: Missing input data at end of file!\n");
             return false;
         }
-        new MyCoord(0.0, 0.0);
-        final MyPoint obj5 = new MyPoint(0, 0);
+        //new MyCoord(0.0, 0.0);
+        final MyPoint pointNull = new MyPoint(0, 0);
         for (int i = 0; i < this.restraintData.size(); ++i) {
             if (this.restraintData.get(i) == null) {
-                this.restraintData.set(i, obj5);
+                this.restraintData.set(i, pointNull);
             }
         }
         this.supportRestraintCount = 0;
