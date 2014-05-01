@@ -1,6 +1,6 @@
-package edu.vanderbilt.truss.legacy;
+package edu.vanderbilt.truss;
 
-class NumberFormatter {
+public class NumberFormatter {
     int len;
     int dec;
 

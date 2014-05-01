@@ -8,7 +8,9 @@ package edu.vanderbilt.truss;
 public interface JointResultStruct {
 
     int id();
-    double[] wVector();
-
+    double displacementX();
+    double displacementY();
+    double reactionX();
+    double reactionY();
 
 }

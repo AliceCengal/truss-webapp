@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import edu.vanderbilt.truss.InputStruct;
+import edu.vanderbilt.truss.NumberFormatter;
 import edu.vanderbilt.truss.parser.ParserUtil;
 
 public class Truss2D {
