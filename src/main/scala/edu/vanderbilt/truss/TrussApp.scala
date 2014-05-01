@@ -2,6 +2,8 @@ package edu.vanderbilt.truss
 
 import java.io.File
 import edu.vanderbilt.truss.reporter.ReporterUtil
+import edu.vanderbilt.truss.engine.EngineUtil
+import edu.vanderbilt.truss.parser.ParserUtil
 
 object TrussApp extends App with LegacyTest {
 
@@ -10,8 +12,9 @@ object TrussApp extends App with LegacyTest {
   println("===============================================================")
   println()
 
-  val reporter = ReporterUtil.getReporter(System.out)
-  reporter.report(ResultFactory.dummyResult())
+  val engine = EngineUtil.getEngine(ParserUtil.getParser(""),
+                                     ReporterUtil.getReporter(System.out))
+  engine.compute()
 
   def openInputSet = new File(getClass.getResource("/sample_input_set.txt").getPath)
 

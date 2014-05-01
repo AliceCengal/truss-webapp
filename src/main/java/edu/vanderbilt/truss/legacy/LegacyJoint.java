@@ -1,6 +1,6 @@
 package edu.vanderbilt.truss.legacy;
 
-class LegacyJoint {
+public class LegacyJoint {
     public double x;
     public double y;
     public int jrx;

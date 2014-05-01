@@ -39,10 +39,43 @@ public class ResultFactory {
         return r;
     }
 
+    public static class ResultBuilder {
+
+        private SimpleResult partialResult = new SimpleResult();
+
+        public ResultBuilder addJoint(JointResultStruct j) {
+            partialResult.joints.add(j);
+            return this;
+        }
+
+        public ResultBuilder addMember(MemberResultStruct m) {
+            partialResult.members.add(m);
+            return this;
+        }
+
+        public ResultBuilder setMessage(String message) {
+            partialResult.message = message;
+            return this;
+        }
+
+        public ResultBuilder setSuccessful(boolean s) {
+            if (s) {
+                partialResult.message = "";
+            }
+            return this;
+        }
+
+        public ResultStruct build() {
+            return partialResult;
+        }
+
+    }
+
     private static class SimpleResult implements ResultStruct {
 
         Set<JointResultStruct> joints = new HashSet<JointResultStruct>();
         Set<MemberResultStruct> members = new HashSet<MemberResultStruct>();
+        String message = "";
 
         @Override
         public Set<JointResultStruct> jointSet() {
@@ -52,6 +85,16 @@ public class ResultFactory {
         @Override
         public Set<MemberResultStruct> memberSet() {
             return members;
+        }
+
+        @Override
+        public String message() {
+            return message;
+        }
+
+        @Override
+        public boolean isSuccessful() {
+            return message.equals("");
         }
     }
 

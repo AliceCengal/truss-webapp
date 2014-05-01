@@ -11,5 +11,7 @@ public interface ResultStruct {
 
     Set<JointResultStruct> jointSet();
     Set<MemberResultStruct> memberSet();
+    String message();
+    boolean isSuccessful();
 
 }

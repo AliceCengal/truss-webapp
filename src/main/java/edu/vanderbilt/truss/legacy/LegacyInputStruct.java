@@ -14,15 +14,15 @@ import java.util.List;
  */
 public class LegacyInputStruct {
 
-    List<Float> materialData = new LinkedList<Float>();
-    List<MyPoint> restraintData = new LinkedList<MyPoint>();
-    int supportRestraintCount = 0;
-    int maxb = 0;
-    double[][] xkMatrix;
-    double[] wVector;
+    public List<Float> materialData = new LinkedList<Float>();
+    public List<MyPoint> restraintData = new LinkedList<MyPoint>();
+    public int supportRestraintCount = 0;
+    public int maxb = 0;
+    public double[][] xkMatrix;
+    public double[] wVector;
 
-    List<LegacyJoint> joints = new LinkedList<LegacyJoint>();
-    List<LegacyMember> members = new LinkedList<LegacyMember>();
+    public List<LegacyJoint> joints = new LinkedList<LegacyJoint>();
+    public List<LegacyMember> members = new LinkedList<LegacyMember>();
 
     public static LegacyInputStruct createFromNewStruct(InputStruct struct) {
         LegacyInputStruct old = new LegacyInputStruct();
