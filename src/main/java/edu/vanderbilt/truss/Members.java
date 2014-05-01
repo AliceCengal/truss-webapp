@@ -13,30 +13,11 @@ public class Members {
                                 final double area,
                                 final double e) {
         return new Member() {
-            @Override
-            public int id() {
-                return id;
-            }
-
-            @Override
-            public int jointLeft() {
-                return left;
-            }
-
-            @Override
-            public int jointRight() {
-                return right;
-            }
-
-            @Override
-            public double area() {
-                return area;
-            }
-
-            @Override
-            public double elasticity() {
-                return e;
-            }
+            @Override public int id()            { return id; }
+            @Override public int jointLeft()     { return left; }
+            @Override public int jointRight()    { return right; }
+            @Override public double area()       { return area; }
+            @Override public double elasticity() { return e; }
         };
     }
 

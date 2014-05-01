@@ -1,5 +1,8 @@
 package edu.vanderbilt.truss.engine;
 
+import edu.vanderbilt.truss.InputStruct;
+import edu.vanderbilt.truss.reporter.ResultSetReporter;
+
 /**
  * Does the computation
  *
@@ -7,6 +10,8 @@ package edu.vanderbilt.truss.engine;
  */
 public interface TrussEngine {
 
+    void injectInputData(InputStruct input);
+    void injectOutput(ResultSetReporter reporter);
     void compute();
 
 }

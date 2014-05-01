@@ -1,5 +1,6 @@
 package edu.vanderbilt.truss.engine;
 
+import edu.vanderbilt.truss.InputStruct;
 import edu.vanderbilt.truss.ResultFactory;
 import edu.vanderbilt.truss.ResultStruct;
 import edu.vanderbilt.truss.legacy.LegacyInputStruct;
@@ -15,21 +16,55 @@ import edu.vanderbilt.truss.reporter.ResultSetReporter;
  */
 public final class EngineUtil {
 
+    /**
+     * Create an Engine initialized with the components.
+     */
     public static TrussEngine getEngine(InputSetParser inputParser,
                                         ResultSetReporter resultReporter) {
         HackyEngine e = new HackyEngine();
-        e.input = LegacyInputStruct.createFromNewStruct(inputParser.parse());
-        e.reporter = resultReporter;
+        e.injectInputData(inputParser.parse());
+        e.injectOutput(resultReporter);
         return e;
     }
 
+    /**
+     * Creates an uninitialized Engine. Initialize it with its proper
+     * component before calling `compute()`
+     */
+    public static TrussEngine getEngine() {
+        return new HackyEngine();
+    }
+
+    /**
+     * Warning: This class contains Deep Magic. Do not touch it unless you know what
+     * you're doing. Make sure all changes are well documented. Run the test after
+     * every change, making sure that the results computed by this engine stays
+     * consistent.
+     */
     private static class HackyEngine implements TrussEngine {
 
         LegacyInputStruct input;
         ResultSetReporter reporter;
         String message;
 
+        @Override
+        public void injectInputData(InputStruct input) {
+            this.input = LegacyInputStruct.createFromNewStruct(input);
+        }
+
+        @Override
+        public void injectOutput(ResultSetReporter reporter) {
+            this.reporter = reporter;
+        }
+
         @Override public void compute() {
+            if (input == null) {
+                throw new IllegalStateException("Please inject a data source");
+            }
+            if (reporter == null) {
+                throw new IllegalStateException("Please inject an output channel");
+            }
+
             if (!checkData()) {
                 reporter.report(new ResultFactory.ResultBuilder()
                                         .setMessage(message)
