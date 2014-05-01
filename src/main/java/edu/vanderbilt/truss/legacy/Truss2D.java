@@ -157,7 +157,7 @@ public class Truss2D {
             this.dataOutput.println("\nDATA ERROR: Missing input data at end of file!\n");
             return false;
         }
-        //new MyCoord(0.0, 0.0);
+
         final MyPoint pointNull = new MyPoint(0, 0);
         for (int i = 0; i < input.restraintData.size(); ++i) {
             if (input.restraintData.get(i) == null) {
@@ -167,7 +167,8 @@ public class Truss2D {
         input.supportRestraintCount = 0;
         for (int j = 0; j < input.restraintData.size(); ++j) {
             if (input.restraintData.get(j) != null) {
-                input.supportRestraintCount += input.restraintData.get(j).x + input.restraintData.get(j).y;
+                input.supportRestraintCount += input.restraintData.get(j).x
+                        + input.restraintData.get(j).y;
                 input.joints.get(j).jrx = input.restraintData.get(j).x;
                 input.joints.get(j).jry = input.restraintData.get(j).y;
             }
@@ -212,8 +213,7 @@ public class Truss2D {
             input.members.get(i).length = sqrt;
         }
     }
-    
-    @SuppressWarnings({"MismatchedReadAndWriteOfArray", "ForLoopReplaceableByForEach"})
+
     private void calculateUnrestrainedStiffnessMx() {
         input.xkMatrix = new double[2 * input.joints.size()][input.maxb];
         final double[][] array = new double[4][4];
@@ -248,9 +248,7 @@ public class Truss2D {
                     final int n8 = 2 * (member.j1 + 1) - (2 - n6);
                     final int n9 = 2 * (member.j1 + 1) - (2 - n7) - n8 + 1;
                     if (n9 > 0) {
-                        final double[] array2 = input.xkMatrix[n8 - 1];
-                        final int n10 = n9 - 1;
-                        array2[n10] += array[n6 - 1][n7 - 1];
+                        input.xkMatrix[n8 - 1][n9 - 1] += array[n6 - 1][n7 - 1];
                     }
                 }
             }
@@ -259,9 +257,7 @@ public class Truss2D {
                     final int n13 = 2 * (member.j1 + 1) - (2 - n11);
                     final int n14 = 2 * (member.j2 + 1) - (4 - n12) - n13 + 1;
                     if (n14 > 0) {
-                        final double[] array3 = input.xkMatrix[n13 - 1];
-                        final int n15 = n14 - 1;
-                        array3[n15] += array[n11 - 1][n12 - 1];
+                        input.xkMatrix[n13 - 1][n14 - 1] += array[n11 - 1][n12 - 1];
                     }
                 }
             }
@@ -270,9 +266,7 @@ public class Truss2D {
                     final int n18 = 2 * (member.j2 + 1) - (4 - n16);
                     final int n19 = 2 * (member.j1 + 1) - (2 - n17) - n18 + 1;
                     if (n19 > 0) {
-                        final double[] array4 = input.xkMatrix[n18 - 1];
-                        final int n20 = n19 - 1;
-                        array4[n20] += array[n16 - 1][n17 - 1];
+                        input.xkMatrix[n18 - 1][n19 - 1] += array[n16 - 1][n17 - 1];
                     }
                 }
             }
@@ -281,9 +275,7 @@ public class Truss2D {
                     final int n23 = 2 * (member.j2 + 1) - (4 - n21);
                     final int n24 = 2 * (member.j2 + 1) - (4 - n22) - n23 + 1;
                     if (n24 > 0) {
-                        final double[] array5 = input.xkMatrix[n23 - 1];
-                        final int n25 = n24 - 1;
-                        array5[n25] += array[n21 - 1][n22 - 1];
+                        input.xkMatrix[n23 - 1][n24 - 1] += array[n21 - 1][n22 - 1];
                     }
                 }
             }
@@ -316,8 +308,7 @@ public class Truss2D {
             }
         }
     }
-    
-    @SuppressWarnings("MismatchedReadAndWriteOfArray")
+
     private void calculateSubstitution() {
         for (int i = 1; i <= 2 * input.joints.size(); ++i) {
             int n = i;
@@ -333,20 +324,14 @@ public class Truss2D {
                     for (int k = j; k <= input.maxb; ++k) {
                         ++n3;
                         if (input.xkMatrix[i - 1][k - 1] != 0.0) {
-                            final double[] array = input.xkMatrix[n - 1];
-                            final int n4 = n3 - 1;
-                            array[n4] -= n2 * input.xkMatrix[i - 1][k - 1];
+                            input.xkMatrix[n - 1][n3 - 1] -= n2 * input.xkMatrix[i - 1][k - 1];
                         }
                     }
                     input.xkMatrix[i - 1][j - 1] = n2;
-                    final double[] wVector = input.wVector;
-                    final int n5 = n - 1;
-                    wVector[n5] -= n2 * input.wVector[i - 1];
+                    input.wVector[n - 1] -= n2 * input.wVector[i - 1];
                 }
             }
-            final double[] wVector2 = input.wVector;
-            final int n6 = i - 1;
-            wVector2[n6] /= input.xkMatrix[i - 1][0];
+            input.wVector[i - 1] /= input.xkMatrix[i - 1][0];
         }
         int n7 = 2 * input.joints.size();
         while (--n7 > 0) {
@@ -354,15 +339,12 @@ public class Truss2D {
             for (int l = 2; l <= input.maxb; ++l) {
                 ++n8;
                 if (input.xkMatrix[n7 - 1][l - 1] != 0.0) {
-                    final double[] wVector3 = input.wVector;
-                    final int n9 = n7 - 1;
-                    wVector3[n9] -= input.xkMatrix[n7 - 1][l - 1] * input.wVector[n8 - 1];
+                    input.wVector[n7 - 1] -= input.xkMatrix[n7 - 1][l - 1] * input.wVector[n8 - 1];
                 }
             }
         }
     }
-    
-    //@SuppressWarnings({"MismatchedReadAndWriteOfArray", "UnnecessaryLocalVariable"})
+
     private void calculate() throws IOException {
         final double[] memberForces = new double[input.members.size()];
         for (int i = 1; i <= input.members.size(); ++i) {
@@ -376,16 +358,16 @@ public class Truss2D {
         }
         final double[] reactionX = new double[input.joints.size()];
         final double[] reactionY = new double[input.joints.size()];
-        final double[] array4 = new double[input.joints.size()];
-        final double[] array5 = new double[input.joints.size()];
+        final int[] restraintX = new int[input.joints.size()];
+        final int[] restraintY = new int[input.joints.size()];
 
         for (int j = 0; j < input.joints.size(); ++j) {
-            array4[j] = input.joints.get(j).jrx;
-            array5[j] = input.joints.get(j).jry;
-            if (array4[j] != 0.0) {
+            restraintX[j] = input.joints.get(j).jrx;
+            restraintY[j] = input.joints.get(j).jry;
+            if (restraintX[j] != 0) {
                 reactionX[j] = -input.joints.get(j).wx;
             }
-            if (array5[j] != 0.0) {
+            if (restraintY[j] != 0) {
                 reactionY[j] = -input.joints.get(j).wy;
             }
         }
@@ -393,20 +375,23 @@ public class Truss2D {
         for (int k = 0; k < input.members.size(); ++k) {
             final int j2 = input.members.get(k).j1;
             final int j3 = input.members.get(k).j2;
-            if (array4[j2] != 0.0) {
+            if (restraintX[j2] != 0) {
                 reactionX[j2] -= input.members.get(k).cosx * memberForces[k];
             }
-            if (array5[j2] != 0.0) {
+            if (restraintY[j2] != 0) {
                 reactionY[j2] -= input.members.get(k).cosy * memberForces[k];
             }
-            if (array4[j3] != 0.0) {
+            if (restraintX[j3] != 0) {
                 reactionX[j3] += input.members.get(k).cosx * memberForces[k];
             }
-            if (array5[j3] != 0.0) {
+            if (restraintY[j3] != 0) {
                 reactionY[j3] += input.members.get(k).cosy * memberForces[k];
             }
         }
 
+        // SUCCESSFUL OUTPUT
+        // requires: input.wVector input.joints memberForces input.members
+        //           reactionX reactionY
         this.dataOutput.println("Joint Displacements:");
         for (int l = 1; l <= input.joints.size(); ++l) {
             this.dataOutput.println("\t" + l + "\t" +
