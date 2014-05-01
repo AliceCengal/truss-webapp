@@ -7,6 +7,8 @@ package edu.vanderbilt.truss;
  */
 public class Joints {
 
+    private Joints() {}
+
     public static Joint create(final int     id,
                                final double  xx,
                                final double  yy,

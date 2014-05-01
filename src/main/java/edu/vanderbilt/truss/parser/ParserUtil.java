@@ -16,6 +16,8 @@ import java.util.Set;
  */
 public final class ParserUtil {
 
+    private ParserUtil() {}
+
     public static InputSetParser getParser(String inputSetFilePath) {
         return new InputSetParser() {
             @Override

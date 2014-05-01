@@ -16,6 +16,8 @@ import edu.vanderbilt.truss.reporter.ResultSetReporter;
  */
 public final class EngineUtil {
 
+    private EngineUtil() {}
+
     /**
      * Create an Engine initialized with the components.
      */

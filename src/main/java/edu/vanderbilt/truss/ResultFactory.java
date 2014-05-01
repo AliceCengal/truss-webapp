@@ -10,6 +10,8 @@ import java.util.Set;
  */
 public class ResultFactory {
 
+    private ResultFactory() {}
+
     public static JointResultStruct jointResult(final int id,
                                                 final double xd,
                                                 final double yd,

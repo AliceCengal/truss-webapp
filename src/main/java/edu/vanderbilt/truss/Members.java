@@ -7,6 +7,8 @@ package edu.vanderbilt.truss;
  */
 public class Members {
 
+    private Members() {}
+
     public static Member create(final int id,
                                 final int left,
                                 final int right,

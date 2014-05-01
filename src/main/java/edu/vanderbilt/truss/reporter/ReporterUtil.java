@@ -14,6 +14,8 @@ import java.io.PrintStream;
  */
 public final class ReporterUtil {
 
+    private ReporterUtil() {}
+
     public static ResultSetReporter getReporter(PrintStream stdOut) {
         SimpleReporter r = new SimpleReporter();
         r.stdOut = stdOut;
