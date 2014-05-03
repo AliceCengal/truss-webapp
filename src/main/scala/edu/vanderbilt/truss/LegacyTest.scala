@@ -1,6 +1,6 @@
 package edu.vanderbilt.truss
 
-import java.io.{IOException, File, FileInputStream}
+import java.io.{IOException, FileInputStream}
 import scala.io.Source
 import edu.vanderbilt.truss.legacy.Truss2D
 
@@ -22,8 +22,7 @@ trait LegacyTest {
     }
     println()
 
-    val dataSource = new FileInputStream(
-        new File(getClass.getResource("/sample_input_set.txt").getPath))
+    val dataSource = new FileInputStream(TrussApp.openInputSet)
 
     val legacyEngine = new Truss2D(System.out)
     try {

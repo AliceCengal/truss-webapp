@@ -1,0 +1,75 @@
+Truss Webapp API
+================
+
+http://trussapp.edu/api/
+| "display this API guide"
+|
+|
+|-user/{userName}/
+|   |
+|   |-history/
+|   |   |
+|   |   |-last
+|   |   |
+|   |   |-previousn/{count}
+|   |   |
+|   |   |-all
+|   |
+|   |-compute
+|
+|-compute
+
+InputSet =
+    {
+        "userId":  String
+        "inputSetId": String
+        "jointSet":   [Joint]
+        "memberSet":  [Member]
+    }
+
+ResultSet =
+    {
+        "userId":          String
+        "inputSetId":      String
+        "timestamp":       String
+        "message":         String
+        "isSuccessful":    Boolean
+        "responseCode":    Int
+        "jointResultSet":  [JointResult]
+        "memberResultSet": [MemberResult]
+    }
+
+Joint =
+    {
+        "id":           Int
+        "x":            Double
+        "y":            Double
+        "isRestraintX": Boolean
+        "isRestraintY": Boolean
+        "loadX":        Double
+        "loadY":        Double
+    }
+
+Member =
+    {
+        "id":         Int
+        "jointLeft":  Int
+        "jointRight": Int
+        "area":       Double
+        "elasticity": Double
+    }
+
+JointResult =
+    {
+        "id":            Int
+        "displacementX": Double
+        "displacementY": Double
+        "reactionX":     Double
+        "reactionY":     Double
+    }
+
+MemberResult =
+    {
+        "id":    Int
+        "force": Double
+    }
