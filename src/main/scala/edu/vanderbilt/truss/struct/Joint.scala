@@ -4,6 +4,7 @@ import com.google.gson.{JsonParser, JsonObject}
 import spray.httpx.unmarshalling.Unmarshaller
 import spray.http.MediaTypes.`application/json`
 import spray.http.HttpEntity
+import edu.vanderbilt.truss
 
 /**
  * Created by athran on 5/3/14.
@@ -12,6 +13,21 @@ case class Joint(id: Int,
                  coor: (Double, Double),
                  restraint: (Boolean, Boolean),
                  load: (Double, Double))
+    extends truss.Joint
+{
+  def xCoor(): Double = coor._1
+
+  def yCoor(): Double = coor._2
+
+  def isRestraintX: Boolean = restraint._1
+
+  def isRestraintY: Boolean = restraint._2
+
+  def loadX(): Double = load._1
+
+  def loadY(): Double = load._2
+}
+
 
 object Joint {
   val KEY_ID     = "id"

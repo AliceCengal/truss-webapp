@@ -5,7 +5,7 @@ import scala.concurrent.duration._
 import akka.actor.Actor
 import akka.util.Timeout
 
-import spray.routing.{PathMatchers, HttpService}
+import spray.routing.HttpService
 
 
 /**

@@ -2,6 +2,7 @@ package edu.vanderbilt.truss.struct
 
 import com.google.gson.JsonObject
 import com.google.gson.stream.JsonWriter
+import edu.vanderbilt.truss
 
 /**
  * Created by athran on 5/3/14.
@@ -9,17 +10,26 @@ import com.google.gson.stream.JsonWriter
 case class JointResult(id: Int,
                        displacement: (Double,Double),
                        reaction: (Double,Double))
+    extends truss.JointResultStruct
 {
   import JointResult._
 
-  def writeJson(writer: JsonWriter) {
+  def displacementX(): Double = displacement._1
+
+  def displacementY(): Double = displacement._2
+
+  def reactionX(): Double = reaction._1
+
+  def reactionY(): Double = reaction._2
+
+  def writeToJson(writer: JsonWriter) {
     writer.
         beginObject().
         name(KEY_ID).value(id).
-        name(KEY_DISP_X).value(displacement._1).
-        name(KEY_DISP_Y).value(displacement._2).
-        name(KEY_REACT_X).value(reaction._1).
-        name(KEY_REACT_Y).value(reaction._2).
+        name(KEY_DISP_X).value(displacementX()).
+        name(KEY_DISP_Y).value(displacementY()).
+        name(KEY_REACT_X).value(reactionX()).
+        name(KEY_REACT_Y).value(reactionY()).
         endObject()
   }
 
@@ -44,6 +54,17 @@ object JointResult {
                      json.get(KEY_REACT_X),
                      json.get(KEY_REACT_Y))
                )
+  }
+
+  implicit def from(result: truss.JointResultStruct): JointResult = {
+    JointResult(
+                 id = result.id(),
+                 displacement = (
+                     result.displacementX(),
+                     result.displacementY()),
+                 reaction = (
+                     result.reactionX(),
+                     result.reactionY()))
   }
 
 }

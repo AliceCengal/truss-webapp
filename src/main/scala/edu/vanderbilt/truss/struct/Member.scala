@@ -1,6 +1,7 @@
 package edu.vanderbilt.truss.struct
 
 import com.google.gson.JsonObject
+import edu.vanderbilt.truss
 
 /**
  * Created by athran on 5/3/14.
@@ -8,7 +9,13 @@ import com.google.gson.JsonObject
 case class Member(id: Int,
                   joints: (Int, Int),
                   area: Double,
-                  elastivity: Double)
+                  elasticity: Double)
+    extends truss.Member
+{
+  def jointLeft(): Int = joints._1
+
+  def jointRight(): Int = joints._2
+}
 
 object Member {
   val KEY_ID    = "id"
@@ -26,7 +33,7 @@ object Member {
                 json.get(KEY_LEFT),
                 json.get(KEY_RIGHT)),
             area = json.get(KEY_AREA),
-            elastivity = json.get(KEY_ELAS)
+            elasticity = json.get(KEY_ELAS)
           )
   }
 

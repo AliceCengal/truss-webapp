@@ -1,6 +1,10 @@
 package edu.vanderbilt.truss.struct
 
+import java.util
+import scala.collection.JavaConverters._
 import com.google.gson.JsonObject
+import edu.vanderbilt.truss.InputStruct
+import edu.vanderbilt.truss
 
 /**
  * Marshalled form of user input
@@ -11,6 +15,20 @@ case class InputSet(userId: String,
                     inputSetId: String,
                     jointSet: Set[Joint],
                     memberSet: Set[Member])
+    extends InputStruct
+{
+  def studentId(): String = userId
+
+  def joints(): util.Set[truss.Joint] = {
+    // MAGIC!!!
+    jointSet.map(_.asInstanceOf[truss.Joint]).asJava
+  }
+
+  def members(): util.Set[truss.Member] = {
+    // No seriously, how the hell could this even work?
+    memberSet.map(_.asInstanceOf[truss.Member]).asJava
+  }
+}
 
 object InputSet {
   val KEY_ID       = "userId"
