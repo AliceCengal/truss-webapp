@@ -7,7 +7,9 @@ A webapp for the PAVE Statics class.
 
 - Install SBT: http://www.scala-sbt.org/
 
-- In the root directory, use the command `sbt run`
+- In the root directory of the repo, use the command `sbt compile` to compile and `sbt run` to start the server.
+  Alternatively, use the command `sbt` to start the SBT shell, then use the commands `compile`
+  and `run` there.
 
 ### Importing into IntelliJ IDEA
 

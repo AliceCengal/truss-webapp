@@ -18,6 +18,7 @@ class MainServer extends Actor with MainService {
   def actorRefFactory = context
 
   def receive: Actor.Receive = runRoute(mainRoute)
+
 }
 
 trait MainService extends HttpService {
@@ -28,36 +29,51 @@ trait MainService extends HttpService {
 
   val mainRoute =
     pathPrefix("api") {
-      pathPrefix("user" / PathMatchers.Segment) {
+      pathPrefix("user" / Segment) {
         userName =>
-          pathPrefix("history") {
-            path("last") {
-              complete("Requesting the last computation of user " + userName)
+          pathEnd {
+            get {
+              complete("Return info for user " + userName)
             } ~
-            path("previousn" / IntNumber) {
-              num =>
-                complete("Requesting last " + num + " computations for user " + userName)
+            post {
+              complete("Register user " + userName)
+            }
+          } ~
+          path("inputset") {
+            get {
+              complete("return a list of InputSet ids for user " + userName)
             } ~
-            path("all") {
-              complete("Requesting all computations from user " + userName)
-            } ~
-            indexPage
+            post {
+              complete("create a new InputSet record for user " + userName)
+            }
           } ~
-          path("compute") {
-            complete("Do computation for user " + userName)
-          } ~
-          path("") {
-            complete("Received from user " + userName)
-          } ~
-          indexPage
+          path("inputset" / Segment) {
+            inputSetId =>
+              get {
+                complete("Return the latest InputSet of user " + userName + " with id " + inputSetId)
+              } ~
+              post {
+                complete("Edit the InputSet record of user " + userName + " with id " + inputSetId)
+              }
+          }
       } ~
-      path("compute") {
-        complete("free computation")
+      path("computation") {
+        post {
+          complete("Anonymous computation")
+        }
+      } ~
+      path("sample") {
+        get {
+          complete("return a list of sample Ids")
+        }
+      } ~
+      path("sample" / Segment) {
+        inputSetId =>
+          get {
+            complete("return a sample InputSet with id " + inputSetId)
+          }
       } ~
       indexPage
-    } ~
-    path("compute") {
-      complete("free computation")
     } ~
     getFromResourceDirectory("webpage")
 

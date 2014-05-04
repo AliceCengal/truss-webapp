@@ -4,24 +4,55 @@ Truss Webapp API
 http://trussapp.edu/api/
 | "display this API guide"
 |
+|-user/{username}
+|   GET: "Return user info
+|        => UserInfo
+|   POST: "register user"
+|         => UserInfo
 |
 |-user/{userName}/
 |   |
-|   |-history/
-|   |   |
-|   |   |-last
-|   |   |
-|   |   |-previousn/{count}
-|   |   |
-|   |   |-all
+|   |-inputset
+|   |   GET: "return a list of InputSetIds for this user"
+|   |        => [String]
+|   |   POST: "create a new InputSet record"
+|   |         InputSet => ResultSet
 |   |
-|   |-compute
+|   |-inputSet/{inputSetId}
+|       GET: "return the latest InputSet with this id"
+|            => InputSet
 |
-|-compute
+|       POST: "post an edited version of this InputSet.
+|              Overwrite the previously submitted InputSet.
+|              If no previous InputSet with this id exist, do nothing.
+|              Will probably add support for versioning later."
+|              InputSet => ResultSet
+|
+|-computation
+|   POST: "Anonymous computation"
+|         InputSet => ResultSet
+|
+|-sample
+|   GET: "return a list of sample Ids"
+|        => [String]
+|
+|-sample/{inputSetId}
+    GET: "return a sample InputSet"
+         => InputSet
+
+UserInfo =
+    {
+        "name": String
+    }
+
+InputSetInfo =
+    {
+        "dateCreated": Int
+    }
 
 InputSet =
     {
-        "userId":  String
+        "userId":     String
         "inputSetId": String
         "jointSet":   [Joint]
         "memberSet":  [Member]
