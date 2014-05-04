@@ -60,4 +60,14 @@ object Joint {
       fromJson(new JsonParser().parse(data.asString).getAsJsonObject)
   }
 
+  def compatCreateJoint(id: Int,
+                        cx: Double,
+                        cy: Double,
+                        rx: Boolean,
+                        ry: Boolean,
+                        lx: Double,
+                        ly: Double): truss.Joint = {
+    Joint(id = id, coor = (cx, cy), restraint = (rx, ry), load = (lx, ly))
+  }
+
 }

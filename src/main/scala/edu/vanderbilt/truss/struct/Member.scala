@@ -37,4 +37,12 @@ object Member {
           )
   }
 
+  def compatCreateMember(id: Int,
+                         left: Int,
+                         right: Int,
+                         area: Double,
+                         e: Double): truss.Member = {
+    Member(id = id, joints = (left, right), area = area, elasticity = e)
+  }
+
 }
