@@ -2,9 +2,13 @@ package edu.vanderbilt.truss.struct
 
 import java.util
 import scala.collection.JavaConverters._
-import com.google.gson.JsonObject
+import com.google.gson.{JsonParser, JsonObject}
+import spray.httpx.unmarshalling.Unmarshaller
+import spray.http.MediaTypes.`application/json`
+
 import edu.vanderbilt.truss.InputStruct
 import edu.vanderbilt.truss
+import spray.http.HttpEntity
 
 /**
  * Marshalled form of user input
@@ -52,5 +56,11 @@ object InputSet {
                       toSet
             )
   }
+
+  implicit val InputSetUnmarshaller =
+      Unmarshaller[InputSet](`application/json`) {
+        case HttpEntity.NonEmpty(contentType, data) =>
+          fromJson(new JsonParser().parse(data.asString).getAsJsonObject)
+      }
 
 }

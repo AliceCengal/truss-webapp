@@ -2,10 +2,12 @@ package edu.vanderbilt.truss
 
 import scala.concurrent.duration._
 
-import akka.actor.Actor
+import akka.actor.{Props, Actor}
+import akka.pattern.ask
 import akka.util.Timeout
-
 import spray.routing.HttpService
+
+import edu.vanderbilt.truss.struct.InputSet
 
 
 /**
@@ -26,6 +28,8 @@ trait MainService extends HttpService {
   implicit def executionContext = actorRefFactory.dispatcher
 
   implicit val timeout = Timeout(5 seconds)
+
+  val trussComputer = actorRefFactory.actorOf(Props[TrussComputer], "trussComputer")
 
   val mainRoute =
     pathPrefix("api") {
@@ -59,7 +63,22 @@ trait MainService extends HttpService {
       } ~
       path("computation") {
         post {
-          complete("Anonymous computation")
+          // Deserialize the json into InputSet. See `InputSet.InputSetUnMarshaller`
+          entity(as[InputSet]) { input =>
+            complete {
+              // Send request to `trussComputer`, asking it to do a computation.
+              // The `?` method returns a `Future[Any]`.
+              // Then cast the `Future[Any]` to Future[ComputationResult].
+              // Store that in `future`.
+              val future = (trussComputer ? TrussComputer.Compute(input))
+                           .mapTo[TrussComputer.ComputationResult]
+
+              // Extract the result from `Future[ComputationResult(ResultSet)]`.
+              // Return the result, which gets serialized into HttpEntity.
+              // See `ResultSet.ResultSetMarshaller`
+              for (TrussComputer.ComputationResult(result) <- future) { result }
+            }
+          }
         }
       } ~
       path("sample") {

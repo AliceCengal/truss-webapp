@@ -1,14 +1,16 @@
 package edu.vanderbilt.truss.struct
 
 import java.util
+import java.io.StringWriter
 import scala.collection.JavaConverters._
 import com.google.gson.JsonObject
-import edu.vanderbilt.truss
+import com.google.gson.stream.JsonWriter
+
 import spray.httpx.marshalling.Marshaller
 import spray.http.MediaTypes.`application/json`
 import spray.http.{AllOrigins, HttpHeaders, HttpEntity}
-import java.io.StringWriter
-import com.google.gson.stream.JsonWriter
+
+import edu.vanderbilt.truss
 
 /**
  * Created by athran on 5/4/14.
