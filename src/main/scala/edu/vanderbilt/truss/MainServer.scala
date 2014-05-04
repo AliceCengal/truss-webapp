@@ -63,15 +63,15 @@ trait MainService extends HttpService {
       } ~
       path("computation") {
         post {
-          // Deserialize the json into InputSet. See `InputSet.InputSetUnMarshaller`
+          // Deserialize the json into InputSet. See `InputSet.InputSetUnmarshaller`
           entity(as[InputSet]) { input =>
             complete {
               // Send request to `trussComputer`, asking it to do a computation.
               // The `?` method returns a `Future[Any]`.
               // Then cast the `Future[Any]` to Future[ComputationResult].
               // Store that in `future`.
-              val future = (trussComputer ? TrussComputer.Compute(input))
-                           .mapTo[TrussComputer.ComputationResult]
+              val future = (trussComputer ? TrussComputer.Compute(input)).
+                           mapTo[TrussComputer.ComputationResult]
 
               // Extract the result from `Future[ComputationResult(ResultSet)]`.
               // Return the result, which gets serialized into HttpEntity.

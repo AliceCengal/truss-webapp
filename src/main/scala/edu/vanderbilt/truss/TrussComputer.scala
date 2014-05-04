@@ -18,6 +18,8 @@ class TrussComputer extends Actor with ActorLogging {
   }
 
   private def compute(input: InputSet) {
+    log.info("Received computation request: ")
+    log.info(input.toString)
     engine.injectInputData(input) // Holy shit
     engine.injectOutput(outputPipe(input))
     engine.compute()
@@ -32,7 +34,10 @@ class TrussComputer extends Actor with ActorLogging {
    */
   private def outputPipe(input: InputSet) = new ResultSetReporter {
     def report(result: ResultStruct): Unit = {
-      sender ! ComputationResult(transform(result, input))
+      val finalResult = transform(result, input)
+      log.info("Computed result:")
+      log.info(finalResult.toString)
+      sender ! ComputationResult(finalResult)
     }
   }
 
