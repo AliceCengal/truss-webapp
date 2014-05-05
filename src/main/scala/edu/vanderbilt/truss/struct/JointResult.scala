@@ -56,7 +56,7 @@ object JointResult {
                )
   }
 
-  implicit def from(result: truss.JointResultStruct): JointResult = {
+  def from(result: truss.JointResultStruct): JointResult = {
     JointResult(
                  id = result.id(),
                  displacement = (

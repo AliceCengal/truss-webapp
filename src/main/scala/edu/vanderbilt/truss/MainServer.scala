@@ -9,7 +9,6 @@ import spray.routing.HttpService
 
 import edu.vanderbilt.truss.struct.InputSet
 
-
 /**
  * The entry point of the server.
  *
@@ -76,7 +75,7 @@ trait MainService extends HttpService {
               // Extract the result from `Future[ComputationResult(ResultSet)]`.
               // Return the result, which gets serialized into HttpEntity.
               // See `ResultSet.ResultSetMarshaller`
-              for (TrussComputer.ComputationResult(result) <- future) { result }
+              for (TrussComputer.ComputationResult(result) <- future) yield result
             }
           }
         }

@@ -9,6 +9,7 @@ import com.google.gson.JsonElement
  */
 object GsonConversion {
   import scala.collection.JavaConverters._
+  import scala.language.implicitConversions
 
   implicit def jsonToInt(json: JsonElement): Int = json.getAsInt
 

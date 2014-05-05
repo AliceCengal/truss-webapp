@@ -53,6 +53,7 @@ case class ResultSet(userId: String,
     memberResults.foreach { _.writeToJson(writer) }
     writer.endArray()
 
+    writer.endObject()
     buffer.toString
   }
 }
