@@ -1,3 +1,4 @@
+'use strict';
 
 var trussApp = angular.module('TrussApp', []);
 
@@ -24,5 +25,6 @@ trussApp.controller('BeamTableCtrl', function($scope) {
     ];
 });
 
+var trussService = angular.module('TrussService', []);
 
-
+trussService.factory('')

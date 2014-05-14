@@ -1,3 +1,4 @@
+'use strict';
 
 var sampleData = {
      "userId": "John Boyd",
@@ -126,7 +127,7 @@ var sampleData = {
  };
 
 var testComputation = function() {
-    var url = "http://localhost:8080/api/computation"
+    var url = "api/computation"
 
     $.ajax({
         url: url,

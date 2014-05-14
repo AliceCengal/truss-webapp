@@ -45,7 +45,7 @@
     <div class="trussmain datainput app-col scroll-y">
         <h2>Untitled</h2>
 
-        <h3>Joint {{'Tab' + 'le'}}</h3>
+        <h3>Joint Table</h3>
         <table class="input-table" ng-controller="JointTableCtrl">
             <tr>
                 <th>Joint Number</th>
@@ -69,9 +69,9 @@
             </tr>
             <tr ng-repeat="member in members">
                 <td>{{member.id}}</td>
-                <td>{{member.left}}</td>
-                <td>{{member.right}}</td>
-                <td>{{member.beamType}}</td>
+                <td>{{member.jointLeft}}</td>
+                <td>{{member.jointRight}}</td>
+                <td>{{member.area}}</td>
             </tr>
         </table>
 
