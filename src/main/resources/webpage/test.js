@@ -143,9 +143,7 @@ var testComputation = function() {
         }
     });
 
-}
-
-
+};
 
 $(document).ready(function() {
     testComputation();
