@@ -24,7 +24,7 @@ object TrussApp extends App with LegacyTest {
     val service = system.actorOf(Props[MainServer], "server")
 
     // start a new HTTP server on port 8080 with our service actor as the handler
-    IO(Http) ! Http.Bind(service, interface = "localhost", port = 8080)
+    IO(Http) ! Http.Bind(service, interface = "129.59.24.106", port = 8080)
 
     println("Hit any key to exit.")
     val result = readLine()
