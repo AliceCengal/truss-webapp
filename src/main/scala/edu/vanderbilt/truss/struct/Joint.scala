@@ -5,6 +5,7 @@ import spray.httpx.unmarshalling.Unmarshaller
 import spray.http.MediaTypes.`application/json`
 import spray.http.HttpEntity
 import edu.vanderbilt.truss
+import com.google.gson.stream.JsonWriter
 
 /**
  * Created by athran on 5/3/14.
@@ -26,6 +27,22 @@ case class Joint(id: Int,
   def loadX(): Double = load._1
 
   def loadY(): Double = load._2
+
+  def writeToJson(writer: JsonWriter) {
+    import edu.vanderbilt.truss.util.GsonConversion._
+    import Joint._
+
+    writer.obj { _.
+      name(KEY_ID).value(id).
+      name(KEY_X).value(xCoor()).
+      name(KEY_Y).value(yCoor()).
+      name(KEY_REST_X).value(isRestraintX).
+      name(KEY_REST_Y).value(isRestraintY).
+      name(KEY_LOAD_X).value(loadX()).
+      name(KEY_LOAD_Y).value(loadY())
+    }
+  }
+
 }
 
 

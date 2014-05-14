@@ -8,6 +8,7 @@ import akka.util.Timeout
 import spray.routing.HttpService
 
 import edu.vanderbilt.truss.struct.InputSet
+import edu.vanderbilt.truss.parser.ParserUtil
 
 /**
  * The entry point of the server.
@@ -88,7 +89,7 @@ trait MainService extends HttpService {
       path("sample" / Segment) {
         inputSetId =>
           get {
-            complete("return a sample InputSet with id " + inputSetId)
+            complete(InputSet.fromLegacy(ParserUtil.getParser("").parse()))
           }
       } ~
       indexPage

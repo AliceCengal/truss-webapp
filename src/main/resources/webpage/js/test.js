@@ -127,7 +127,7 @@ var sampleData = {
  };
 
 var testComputation = function() {
-    var url = "api/computation"
+    var url = "api/computation";
 
     $.ajax({
         url: url,
@@ -146,8 +146,27 @@ var testComputation = function() {
 
 };
 
+var testSample = function() {
+    var url = "api/sample/foo";
+
+    $.ajax({
+        url: url,
+        type: 'get',
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function(json) {
+          console.log(json);
+        },
+        error: function( xhr, status, errorThrown ) {
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+        }
+    });
+};
+
 $(document).ready(function() {
     testComputation();
+    testSample();
 });
 
 

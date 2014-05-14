@@ -2,6 +2,7 @@ package edu.vanderbilt.truss.struct
 
 import com.google.gson.JsonObject
 import edu.vanderbilt.truss
+import com.google.gson.stream.JsonWriter
 
 /**
  * Created by athran on 5/3/14.
@@ -15,6 +16,18 @@ case class Member(id: Int,
   def jointLeft(): Int = joints._1
 
   def jointRight(): Int = joints._2
+
+  def writeToJson(writer: JsonWriter) {
+    import edu.vanderbilt.truss.util.GsonConversion._
+    import Member._
+    writer.obj { w =>
+      w.name(KEY_ID).value(id)
+      w.name(KEY_LEFT).value(jointLeft())
+      w.name(KEY_RIGHT).value(jointRight())
+      w.name(KEY_AREA).value(area)
+      w.name(KEY_ELAS).value(elasticity)
+    }
+  }
 }
 
 object Member {

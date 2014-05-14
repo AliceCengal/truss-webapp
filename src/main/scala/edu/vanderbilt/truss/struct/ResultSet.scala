@@ -3,9 +3,9 @@ package edu.vanderbilt.truss.struct
 import java.util
 import java.io.StringWriter
 import scala.collection.JavaConverters._
+
 import com.google.gson.JsonObject
 import com.google.gson.stream.JsonWriter
-
 import spray.httpx.marshalling.Marshaller
 import spray.http.MediaTypes.`application/json`
 import spray.http.{AllOrigins, HttpHeaders, HttpEntity}
@@ -31,29 +31,25 @@ case class ResultSet(userId: String,
   def memberSet(): util.Set[truss.MemberResultStruct] =
     memberResults.asInstanceOf[Set[truss.MemberResultStruct]].asJava
 
-  def writeToJson(): String = {
+  def writeToJson: String = {
     import ResultSet._
+    import edu.vanderbilt.truss.util.GsonConversion._
+
     val buffer = new StringWriter()
     val writer = new JsonWriter(buffer)
+    writer.setIndent("")
 
-    writer.
-        beginObject().
-        name(KEY_ID).value(userId).
-        name(KEY_INPUTID).value(inputSetId).
-        name(KEY_TIME).value(Integer.toString(timeStamp)).
-        name(KEY_MESSAGE).value(message).
-        name(KEY_SUCCESS).value(isSuccessful).
-        name(KEY_RESPONSE).value(responseCode)
+    writer.obj { _.
+      name(KEY_ID).value(userId).
+      name(KEY_INPUTID).value(inputSetId).
+      name(KEY_TIME).value(Integer.toString(timeStamp)).
+      name(KEY_MESSAGE).value(message).
+      name(KEY_SUCCESS).value(isSuccessful).
+      name(KEY_RESPONSE).value(responseCode).
+      name(KEY_JOINTS).array(w => jointResults.foreach(_.writeToJson(w))).
+      name(KEY_MEMBERS).array(w => memberResults.foreach(_.writeToJson(w)))
+    }
 
-    writer.name(KEY_JOINTS).beginArray()
-    jointResults.foreach { _.writeToJson(writer) }
-    writer.endArray()
-
-    writer.name(KEY_MEMBERS).beginArray()
-    memberResults.foreach { _.writeToJson(writer) }
-    writer.endArray()
-
-    writer.endObject()
     buffer.toString
   }
 }
@@ -91,7 +87,7 @@ object ResultSet {
   implicit val ResultSetMarshaller =
     Marshaller.of[ResultSet](`application/json`) { (value, contentType, ctx) =>
       ctx.marshalTo(
-                     HttpEntity(contentType, value.writeToJson()),
+                     HttpEntity(contentType, value.writeToJson),
                      HttpHeaders.`Access-Control-Allow-Origin`(AllOrigins))
     }
 
