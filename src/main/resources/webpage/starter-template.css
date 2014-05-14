@@ -1,7 +1,41 @@
 body {
+  background-color: #dddddd;
   padding-top: 0px;
 }
 .starter-template {
   padding: 40px 15px;
   text-align: center;
+}
+
+.navbar-brand.custom-brand {
+  color: #E7B850;
+}
+
+.app-row, .app-col { overflow: hidden; position: absolute; }
+.app-row { left: 0; right: 0; }
+.app-col { top: 0; bottom: 0; }
+.scroll-x { overflow-x: auto; }
+.scroll-y { overflow-y: auto; }
+
+.trusswin.app-row.app-col {
+  top: 52px
+}
+
+.trussmain {
+  margin: 15px;
+  padding: 15px;
+  background-color:white;
+}
+
+.trussmain.datainput {
+  width: 600px;
+}
+
+.trussmain.diagram {
+  left: 615px;
+  right: 0;
+}
+
+.trussmain.window {
+  padding: 15px;
 }
