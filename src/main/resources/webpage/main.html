@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang=en ng-app>
+<html lang=en ng-app="TrussApp">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,7 +15,12 @@
     <!-- Custom styles for this template -->
     <link href="starter-template.css" rel="stylesheet">
 
+    <!-- Loading AngularJS -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+
+    <!-- Loading the application code -->
+    <script src="js/controllers.js"></script>
+    <script src="js/structures.js"></script>
 </head>
 <body>
 <!-- Update later to reuse navbar code across all pages -->
@@ -41,46 +46,46 @@
         <h2>Untitled</h2>
 
         <h3>Joint {{'Tab' + 'le'}}</h3>
-        <table class="input-table">
+        <table class="input-table" ng-controller="JointTableCtrl">
             <tr>
                 <th>Joint Number</th>
-                <th>X</th>
-                <th>Y</th>
+                <th>X-coordinate</th>
+                <th>Y-coordinate</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>10</td>
-                <td>20</td>
+            <tr ng-repeat="joint in joints">
+                <td>{{joint.id}}</td>
+                <td>{{joint.x}}</td>
+                <td>{{joint.y}}</td>
             </tr>
         </table>
 
         <h3>Member Table</h3>
-        <table class="input-table">
+        <table class="input-table" ng-controller="MemberTableCtrl">
             <tr>
                 <th>Member Number</th>
                 <th>Left Joint</th>
                 <th>Right Joint</th>
                 <th>Beam Type</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>10</td>
-                <td>20</td>
-                <td>1</td>
+            <tr ng-repeat="member in members">
+                <td>{{member.id}}</td>
+                <td>{{member.left}}</td>
+                <td>{{member.right}}</td>
+                <td>{{member.beamType}}</td>
             </tr>
         </table>
 
         <h3>Beam Specification Table</h3>
-        <table class="input-table">
+        <table class="input-table" ng-controller="BeamTableCtrl">
             <tr>
                 <th>Beam Type Number</th>
                 <th>Cross-sectional Area</th>
                 <th>Elasticity</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>10</td>
-                <td>20000</td>
+            <tr ng-repeat="type in beamTypes">
+                <td>{{type.id}}</td>
+                <td>{{type.area}}</td>
+                <td>{{type.elasticity}}</td>
             </tr>
         </table>
 
