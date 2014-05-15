@@ -45,7 +45,13 @@
 
 <div class="trusswin app-row app-col">
     <div class="trussmain datainput app-col scroll-y">
-        <h2>{{inputSet.properName()}}</h2>
+        <h2 ng-show="!isEditingTitle" ng-click="clickTitle()">{{inputSet.properName()}}</h2>
+        <table ng-show="isEditingTitle" class="title-input">
+            <tr>
+                <td><input type="text" ng-model="titleInput"></td>
+                <td><a ng-click="doneTitleEditing()">Done</a></td>
+            </tr>
+        </table>
 
         <h3>Joint Table</h3>
         <table class="input-table">
@@ -58,6 +64,14 @@
                 <td>{{joint.id}}</td>
                 <td>{{joint.x}}</td>
                 <td>{{joint.y}}</td>
+            </tr>
+            <tr>
+                <td><input type="number"></td>
+                <td><input type="number"></td>
+                <td><input type="number"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><a>Submit</a></td>
             </tr>
         </table>
 
@@ -75,6 +89,15 @@
                 <td>{{member.jointRight}}</td>
                 <td>{{inputSet.beamTypeIdForMember(member)}}</td>
             </tr>
+            <tr>
+                <td><input type="number"></td>
+                <td><input type="number"></td>
+                <td><input type="number"></td>
+                <td><input type="number"></td>
+            </tr>
+            <tr>
+                <td colspan="4"><a>Submit</a></td>
+            </tr>
         </table>
 
         <h3>Beam Specification Table</h3>
@@ -88,6 +111,14 @@
                 <td>{{type.id}}</td>
                 <td>{{type.area}}</td>
                 <td>{{type.elasticity}}</td>
+            </tr>
+            <tr>
+                <td><input type="number"></td>
+                <td><input type="number"></td>
+                <td><input type="number"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><a>Submit</a></td>
             </tr>
         </table>
 
