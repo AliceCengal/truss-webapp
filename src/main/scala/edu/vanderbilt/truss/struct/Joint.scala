@@ -1,11 +1,14 @@
 package edu.vanderbilt.truss.struct
 
+import com.google.gson.stream.JsonWriter
 import com.google.gson.{JsonParser, JsonObject}
 import spray.httpx.unmarshalling.Unmarshaller
 import spray.http.MediaTypes.`application/json`
 import spray.http.HttpEntity
+
 import edu.vanderbilt.truss
-import com.google.gson.stream.JsonWriter
+import edu.vanderbilt.truss.util.GsonConversion._
+import Joint._
 
 /**
  * Created by athran on 5/3/14.
@@ -29,9 +32,6 @@ case class Joint(id: Int,
   def loadY(): Double = load._2
 
   def writeToJson(writer: JsonWriter) {
-    import edu.vanderbilt.truss.util.GsonConversion._
-    import Joint._
-
     writer.obj { _.
       name(KEY_ID).value(id).
       name(KEY_X).value(xCoor()).
@@ -56,8 +56,6 @@ object Joint {
   val KEY_LOAD_Y = "loadY"
 
   def fromJson(json: JsonObject): Joint = {
-    import edu.vanderbilt.truss.util.GsonConversion._
-
     Joint(
            id = json.get(KEY_ID),
            coor = (

@@ -3,6 +3,7 @@ package edu.vanderbilt.truss.struct
 import com.google.gson.JsonObject
 import com.google.gson.stream.JsonWriter
 import edu.vanderbilt.truss
+import edu.vanderbilt.truss.util.GsonConversion._
 
 /**
  * Created by athran on 5/3/14.
@@ -23,14 +24,13 @@ case class JointResult(id: Int,
   def reactionY(): Double = reaction._2
 
   def writeToJson(writer: JsonWriter) {
-    writer.
-        beginObject().
+    writer.obj { _.
         name(KEY_ID).value(id).
         name(KEY_DISP_X).value(displacementX()).
         name(KEY_DISP_Y).value(displacementY()).
         name(KEY_REACT_X).value(reactionX()).
-        name(KEY_REACT_Y).value(reactionY()).
-        endObject()
+        name(KEY_REACT_Y).value(reactionY())
+    }
   }
 
 }
@@ -43,8 +43,6 @@ object JointResult {
   val KEY_REACT_Y = "reactionY"
 
   def fromJson(json: JsonObject): JointResult = {
-    import edu.vanderbilt.truss.util.GsonConversion._
-
     JointResult(
                  id = json.get(KEY_ID),
                  displacement = (

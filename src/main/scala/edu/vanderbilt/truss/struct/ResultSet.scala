@@ -11,6 +11,8 @@ import spray.http.MediaTypes.`application/json`
 import spray.http.{AllOrigins, HttpHeaders, HttpEntity}
 
 import edu.vanderbilt.truss
+import edu.vanderbilt.truss.util.GsonConversion._
+import ResultSet._
 
 /**
  * Created by athran on 5/4/14.
@@ -32,9 +34,6 @@ case class ResultSet(userId: String,
     memberResults.asInstanceOf[Set[truss.MemberResultStruct]].asJava
 
   def writeToJson: String = {
-    import ResultSet._
-    import edu.vanderbilt.truss.util.GsonConversion._
-
     val buffer = new StringWriter()
     val writer = new JsonWriter(buffer)
     writer.setIndent("")
@@ -65,8 +64,6 @@ object ResultSet {
   val KEY_MEMBERS  = "memberResultSet"
 
   def fromJson(json: JsonObject): ResultSet = {
-    import edu.vanderbilt.truss.util.GsonConversion._
-
     ResultSet(
                userId = json.get(KEY_ID),
                inputSetId = json.get(KEY_INPUTID),

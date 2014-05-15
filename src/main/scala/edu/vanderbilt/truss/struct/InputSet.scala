@@ -9,12 +9,12 @@ import com.google.gson.stream.JsonWriter
 import spray.httpx.unmarshalling.Unmarshaller
 import spray.http.MediaTypes.`application/json`
 import spray.http.{AllOrigins, HttpHeaders, HttpEntity}
+import spray.httpx.marshalling.Marshaller
 
 import edu.vanderbilt.truss.InputStruct
 import edu.vanderbilt.truss
 import edu.vanderbilt.truss.util.GsonConversion._
 import InputSet._
-import spray.httpx.marshalling.Marshaller
 
 /**
  * Marshalled form of user input
@@ -62,8 +62,6 @@ object InputSet {
   val KEY_MEMBERS  = "memberSet"
 
   def fromJson(json: JsonObject): InputSet = {
-    import edu.vanderbilt.truss.util.GsonConversion._
-
     InputSet(
               userId = json.get(KEY_ID),
               inputSetId = json.get(KEY_INPUT_ID),

@@ -1,8 +1,11 @@
 package edu.vanderbilt.truss.struct
 
 import com.google.gson.JsonObject
-import edu.vanderbilt.truss
 import com.google.gson.stream.JsonWriter
+
+import edu.vanderbilt.truss
+import edu.vanderbilt.truss.util.GsonConversion._
+import MemberResult._
 
 /**
  * Created by athran on 5/4/14.
@@ -11,16 +14,13 @@ case class MemberResult(id: Int,
                         force: Double)
     extends truss.MemberResultStruct
 {
-  import MemberResult._
-
   def memberForce(): Double = force
 
   def writeToJson(writer: JsonWriter) {
-    writer.
-        beginObject().
+    writer.obj { _.
         name(KEY_ID).value(id).
-        name(KEY_FORCE).value(force).
-        endObject()
+        name(KEY_FORCE).value(force)
+    }
   }
 }
 
@@ -29,8 +29,6 @@ object MemberResult {
   val KEY_FORCE = "force"
 
   def fromJson(json: JsonObject): MemberResult = {
-    import edu.vanderbilt.truss.util.GsonConversion._
-
     MemberResult(
                   id = json.get(KEY_ID),
                   force = json.get(KEY_FORCE)
