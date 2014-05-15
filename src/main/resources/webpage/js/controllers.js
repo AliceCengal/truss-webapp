@@ -1,13 +1,21 @@
 'use strict';
 
-var trussApp = angular.module('TrussApp', []);
+var trussApp = angular.module('TrussApp', ['TrussServices']);
 
-trussApp.controller('JointTableCtrl', function($scope) {
-    $scope.joints = [
-        new Joint(1, 0, 0),
-        new Joint(2, 10, 10),
-        new Joint(3, 0, 20)
-    ];
+trussApp.controller('InputPaneCtrl', function($scope, $http) {
+    $scope.inputSet = new InputSet();
+
+    $scope.clickSample = function() {
+        console.log("Sample Clicked");
+        $http.get("api/sample/foo").success(function(data) {
+            $scope.inputSet.copyFrom(data);
+        });
+    };
+
+});
+
+trussApp.controller('JointTableCtrl', function($scope, Input) {
+    $scope.joints = Input.jointSet;
 });
 
 trussApp.controller('MemberTableCtrl', function($scope) {
@@ -25,6 +33,11 @@ trussApp.controller('BeamTableCtrl', function($scope) {
     ];
 });
 
-var trussService = angular.module('TrussService', []);
-
-trussService.factory('')
+trussApp.controller('SampleBtnCtrl', function($scope, Input) {
+    $scope.clickSample = function() {
+        console.log("Sample Clicked");
+        $http.get("api/sample/foo").success(function(data) {
+            Input.copyFrom(data);
+        });
+    };
+});

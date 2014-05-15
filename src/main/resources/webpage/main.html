@@ -16,13 +16,15 @@
     <link href="starter-template.css" rel="stylesheet">
 
     <!-- Loading AngularJS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
 
     <!-- Loading the application code -->
-    <script src="js/controllers.js"></script>
     <script src="js/structures.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/controllers.js"></script>
+
 </head>
-<body>
+<body ng-controller="InputPaneCtrl">
 <!-- Update later to reuse navbar code across all pages -->
 <div class="navbar navbar-inverse navbar-top" role="navigation">
     <div class="container">
@@ -32,7 +34,7 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="./main.hmtl">Clear</a></li>
-                <li><a href="./datatables.html">Sample</a></li>
+                <li><a ng-click="clickSample()">Sample</a></li>
                 <li><a href="./datatables.html">Data Tables</a></li>
                 <li><a href="./login.html">Login</a></li>
             </ul>
@@ -43,16 +45,16 @@
 
 <div class="trusswin app-row app-col">
     <div class="trussmain datainput app-col scroll-y">
-        <h2>Untitled</h2>
+        <h2>{{inputSet.properName()}}</h2>
 
         <h3>Joint Table</h3>
-        <table class="input-table" ng-controller="JointTableCtrl">
+        <table class="input-table">
             <tr>
                 <th>Joint Number</th>
                 <th>X-coordinate</th>
                 <th>Y-coordinate</th>
             </tr>
-            <tr ng-repeat="joint in joints">
+            <tr ng-repeat="joint in inputSet.jointSet">
                 <td>{{joint.id}}</td>
                 <td>{{joint.x}}</td>
                 <td>{{joint.y}}</td>
@@ -60,29 +62,29 @@
         </table>
 
         <h3>Member Table</h3>
-        <table class="input-table" ng-controller="MemberTableCtrl">
+        <table class="input-table">
             <tr>
                 <th>Member Number</th>
                 <th>Left Joint</th>
                 <th>Right Joint</th>
                 <th>Beam Type</th>
             </tr>
-            <tr ng-repeat="member in members">
+            <tr ng-repeat="member in inputSet.memberSet">
                 <td>{{member.id}}</td>
                 <td>{{member.jointLeft}}</td>
                 <td>{{member.jointRight}}</td>
-                <td>{{member.area}}</td>
+                <td>{{inputSet.beamTypeIdForMember(member)}}</td>
             </tr>
         </table>
 
         <h3>Beam Specification Table</h3>
-        <table class="input-table" ng-controller="BeamTableCtrl">
+        <table class="input-table">
             <tr>
                 <th>Beam Type Number</th>
                 <th>Cross-sectional Area</th>
                 <th>Elasticity</th>
             </tr>
-            <tr ng-repeat="type in beamTypes">
+            <tr ng-repeat="type in inputSet.listBeamTypes()">
                 <td>{{type.id}}</td>
                 <td>{{type.area}}</td>
                 <td>{{type.elasticity}}</td>

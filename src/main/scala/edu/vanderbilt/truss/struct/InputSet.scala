@@ -56,7 +56,7 @@ case class InputSet(userId: String,
 }
 
 object InputSet {
-  val KEY_ID       = "userId"
+  val KEY_ID       = "studentId"
   val KEY_INPUT_ID = "inputSetId"
   val KEY_JOINTS   = "jointSet"
   val KEY_MEMBERS  = "memberSet"
