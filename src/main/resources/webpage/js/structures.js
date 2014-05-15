@@ -13,7 +13,6 @@ var Joint = (function() {
 
         this.positionString = "";
         this.loadString = "";
-        this.restraintString = "";
     }
 
     Joint.prototype.compareId = function(other) {
@@ -30,6 +29,24 @@ var Joint = (function() {
         this.isRestraintY = other.isRestraintY;
         this.loadX = other.loadX;
         this.loadY = other.loadY;
+
+    };
+
+    var trimsStr = function(s) { return s.trim(); };
+
+    Joint.prototype.readFromEditingStrings = function() {
+        var posStrs = this.positionString.split(",").map(trimStr);
+        if (posStrs.length === 2) {
+            this.x = parseFloat(posStrs[0]);
+            this.y = parseFloat(posStrs[1]);
+        }
+
+        var loadStrs = this.loadString.split(",").map(trimStr);
+        if (loadStrs.length === 2) {
+            this.loadX = parseFloat(loadStrs[0]);
+            this.loadY = parseFloat(loadStrs[1]);
+        }
+
     };
 
     return Joint;
@@ -73,6 +90,29 @@ var InputSet = (function() {
         this.beamSet = [];
     }
 
+    InputSet.prototype.catalogueMember = function(member) {
+        var catalogued = false;
+        for (var bs in this.beamSet) {
+            if (member.area == this.beamSet[bs].area &&
+                member.elasticity == this.beamSet[bs].elasticity) {
+                member.beamId = this.beamSet[bs].id;
+                catalogued = true;
+            }
+        }
+        if (!catalogued) {
+            member.beamId = this.beamSet.length+1;
+            this.beamSet.push(new BeamType(this.beamSet.length+1,
+                                           member.area,
+                                           member.elasticity));
+        }
+    }
+
+    InputSet.prototype.catalogueBeams = function() {
+        for (var m in this.memberSet) {
+            this.catalogueMember(this.memberSet[m]);
+        }
+    };
+
     InputSet.prototype.copyFrom = function(other) {
         this.studentId = other.studentId;
         this.inputSetId = other.inputSetId;
@@ -89,24 +129,17 @@ var InputSet = (function() {
             this.memberSet.push(nm);
         }
 
-        for (var m in this.memberSet) {
-            var catalogued = false;
-            for (var bs in this.beamSet) {
-                if (this.memberSet[m].area == this.beamSet[bs].area &&
-                    this.memberSet[m].elasticity == this.beamSet[bs].elasticity) {
-                    this.memberSet[m].beamId = this.beamSet[bs].id;
-                    catalogued = true;
-                }
-            }
-            if (!catalogued) {
-                this.memberSet[m].beamId = this.beamSet.length+1;
-                this.beamSet.push(new BeamType(this.beamSet.length+1,
-                                               this.memberSet[m].area,
-                                               this.memberSet[m].elasticity))
-            }
-        }
-
+        this.catalogueBeams()
         console.log(this);
+    }
+
+    InputSet.prototype.addMember = function(member) {
+        this.memberSet.push(member);
+        this.catalogueMember(member);
+    }
+
+    InputSet.prototype.addJoint = function(joint) {
+        this.jointSet.push(joint);
     }
 
     InputSet.prototype.listBeamTypes = function() {
@@ -115,6 +148,10 @@ var InputSet = (function() {
 
     InputSet.prototype.beamTypeIdForMember = function(member) {
         return member.beamId;
+    }
+
+    InputSet.prototype.addBeamSpec = function(bs) {
+        this.beamSet.push(bs);
     }
 
     var invalid = function(name) { return name === undefined || name === ""; };

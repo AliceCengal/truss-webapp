@@ -53,75 +53,52 @@
             </tr>
         </table>
 
-        <h3>Joint Table</h3>
+        <h3 ng-click="addJoint()">Joint Table [+]</h3>
         <table class="input-table">
             <tr>
-                <th>Joint Number</th>
-                <th>Position (x,y)</th>
-                <th>Load (x,y)</th>
-                <th>Restraint (x,y)</th>
+                <th>#</th>
+                <th colspan="2">Position (x,y)</th>
+                <th colspan="2">Load (x,y)</th>
+                <th colspan="2">Restraint (x,y)</th>
             </tr>
             <tr ng-repeat="joint in inputSet.jointSet">
                 <td>{{joint.id}}</td>
-                <td>{{joint.x}},{{joint.y}}</td>
-                <td>{{joint.loadX}},{{joint.loadY}}</td>
-                <td>{{joint.isRestraintX}},{{joint.isRestraintY}}</td>
-            </tr>
-            <tr>
-                <td><input type="number" ng-model="editingJoint.id"></td>
-                <td><input type="number" ng-model="editingJoint.x"></td>
-                <td><input type="number" ng-model="editingJoint.y"></td>
-                <td><input type="number"></td>
-            </tr>
-            <tr>
-                <td colspan="4"><a ng-click="submitJoint()">Submit</a></td>
+                <td><input type="number" ng-model="joint.x"></td>
+                <td><input type="number" ng-model="joint.y"></td>
+                <td><input type="number" ng-model="joint.loadX"></td>
+                <td><input type="number" ng-model="joint.loadY"></td>
+                <td><input type="checkbox" ng-model="joint.isRestraintX"></td>
+                <td><input type="checkbox" ng-model="joint.isRestraintY"></td>
             </tr>
         </table>
 
-        <h3>Member Table</h3>
+        <h3 ng-click="addMember()">Member Table [+]</h3>
         <table class="input-table">
             <tr>
-                <th>Member Number</th>
+                <th>#</th>
                 <th>Left Joint</th>
                 <th>Right Joint</th>
                 <th>Beam Type</th>
             </tr>
             <tr ng-repeat="member in inputSet.memberSet">
                 <td>{{member.id}}</td>
-                <td>{{member.jointLeft}}</td>
-                <td>{{member.jointRight}}</td>
-                <td>{{inputSet.beamTypeIdForMember(member)}}</td>
-            </tr>
-            <tr>
-                <td><input type="number"></td>
-                <td><input type="number"></td>
-                <td><input type="number"></td>
-                <td><input type="number"></td>
-            </tr>
-            <tr>
-                <td colspan="4"><a>Submit</a></td>
+                <td><input type="number" ng-model="member.jointLeft"></td>
+                <td><input type="number" ng-model="member.jointRight"></td>
+                <td><input type="number" ng-model="member.beamId"></td>
             </tr>
         </table>
 
-        <h3>Beam Specification Table</h3>
+        <h3 ng-click="addBeamSpec()">Beam Specification Table [+]</h3>
         <table class="input-table">
             <tr>
-                <th>Beam Type Number</th>
+                <th>#</th>
                 <th>Cross-sectional Area</th>
                 <th>Elasticity</th>
             </tr>
             <tr ng-repeat="type in inputSet.listBeamTypes()">
                 <td>{{type.id}}</td>
-                <td>{{type.area}}</td>
-                <td>{{type.elasticity}}</td>
-            </tr>
-            <tr>
-                <td><input type="number"></td>
-                <td><input type="number"></td>
-                <td><input type="number"></td>
-            </tr>
-            <tr>
-                <td colspan="3"><a>Submit</a></td>
+                <td><input type="number" ng-model="type.area" class="wide"></td>
+                <td><input type="number" ng-model="type.elasticity" class="wide"></td>
             </tr>
         </table>
 
@@ -130,6 +107,7 @@
     <div class="trussmain diagram app-col">
         <h3>Diagram Pane</h3>
     </div>
+
 </div>
 
 <!-- Bootstrap core JavaScript

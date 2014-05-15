@@ -5,6 +5,8 @@ var trussApp = angular.module('TrussApp', ['TrussServices']);
 trussApp.controller('InputPaneCtrl', function($scope, $http) {
 
     $scope.inputSet = new InputSet();
+    $scope.inputSet.addJoint(new Joint(1, 0, 0));
+    $scope.inputSet.addMember(new Member(1, 1, 1, 0.0));
 
     $scope.isEditingTitle = false;
 
@@ -17,16 +19,17 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
     $scope.clickSample = function() {
         console.log("Sample Clicked");
         $http.get("api/sample/foo").success(function(data) {
+            $scope.inputSet = new InputSet();
             $scope.inputSet.copyFrom(data);
             $scope.inputSet.jointSet.sort(compareId);
             $scope.inputSet.memberSet.sort(compareId);
-            $scope.editingJoint.id = $scope.inputSet.jointSet.length + 1;
         });
     };
 
     $scope.clearInputPane = function() {
         $scope.inputSet = new InputSet();
-        $scope.editingJoint.id = $scope.inputSet.jointSet.length + 1;
+        $scope.inputSet.addJoint(new Joint(1, 0, 0));
+        $scope.inputSet.addMember(new Member(1, 1, 1, 0.0));
     };
 
     $scope.clickTitle = function() {
@@ -45,11 +48,25 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
         //console.log("digest called");
     });
 
-    $scope.editingJoint = new Joint(0, 0, 0);
-
     $scope.submitJoint = function() {
-        $scope.inputSet.jointSet.push($scope.editingJoint);
-        $scope.editingJoint = new Joint(0, 0, 0);
+        //$scope.inputSet.jointSet.push($scope.editingJoint);
+        console.log($scope.inputSet.jointSet);
+        //$scope.editingJoint = new Joint($scope.inputSet.jointSet + 1, 0, 0);
     };
+
+    $scope.addJoint = function() {
+        $scope.inputSet.addJoint(new Joint($scope.inputSet.jointSet.length + 1, 0, 0));
+    }
+
+    $scope.addMember = function() {
+        var firstBeam = $scope.inputSet.listBeamTypes()[0];
+        var m = new Member($scope.inputSet.memberSet.length + 1, 1, 1, firstBeam.area);
+        m.elasticity = firstBeam.elasticity;
+        $scope.inputSet.addMember(m);
+    }
+
+    $scope.addBeamSpec = function() {
+        $scope.inputSet.addBeamSpec(new BeamType($scope.inputSet.listBeamTypes().length + 1, 0, 0));
+    }
 
 });
