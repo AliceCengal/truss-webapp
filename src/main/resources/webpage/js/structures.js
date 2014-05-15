@@ -170,3 +170,31 @@ var InputSet = (function() {
 
     return InputSet;
 })();
+
+var TrussDiagram = (function() {
+    function TrussDiagram(inputSet) {
+        this.inputSet = inputSet;
+        d3.select(".truss-diagram").selectAll("circle")
+            .data(this.inputSet.jointSet)
+            .enter().append("circle")
+            .attr("cx", jointX)
+            .attr("cy", jointY)
+            .attr("r", 10);
+    }
+
+    var margin = 50;
+    var jointX = function(j, i) { return j.x + margin };
+    var jointY = function(j, i) { return j.y + margin };
+
+    TrussDiagram.prototype.update = function() {
+        d3.selectAll("circle")
+            .attr("cx", jointX)
+            .attr("cy", jointY)
+            .attr("r", 10)
+            .style("fill", "steelblue");
+        console.log("Diagram Updated");
+        console.log(this.inputSet);
+    }
+
+    return TrussDiagram;
+})();

@@ -8,6 +8,8 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
     $scope.inputSet.addJoint(new Joint(1, 0, 0));
     $scope.inputSet.addMember(new Member(1, 1, 1, 0.0));
 
+    $scope.diagram = new TrussDiagram($scope.inputSet);
+
     $scope.isEditingTitle = false;
 
     var compareId = function(a, b) {
@@ -23,6 +25,7 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
             $scope.inputSet.copyFrom(data);
             $scope.inputSet.jointSet.sort(compareId);
             $scope.inputSet.memberSet.sort(compareId);
+            $scope.diagram = new TrussDiagram($scope.inputSet);
         });
     };
 
@@ -30,6 +33,7 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
         $scope.inputSet = new InputSet();
         $scope.inputSet.addJoint(new Joint(1, 0, 0));
         $scope.inputSet.addMember(new Member(1, 1, 1, 0.0));
+        $scope.diagram = new TrussDiagram($scope.inputSet);
     };
 
     $scope.clickTitle = function() {
@@ -45,7 +49,7 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
     };
 
     $scope.$watch(function() {
-        //console.log("digest called");
+        $scope.diagram.update();
     });
 
     $scope.submitJoint = function() {
@@ -56,6 +60,7 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
 
     $scope.addJoint = function() {
         $scope.inputSet.addJoint(new Joint($scope.inputSet.jointSet.length + 1, 0, 0));
+        $scope.diagram = new TrussDiagram($scope.inputSet);
     }
 
     $scope.addMember = function() {
