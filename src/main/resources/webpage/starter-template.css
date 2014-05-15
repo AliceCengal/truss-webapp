@@ -31,11 +31,11 @@ body {
 }
 
 .trussmain.datainput {
-  width: 600px;
+  width: 500px;
 }
 
 .trussmain.diagram {
-  left: 615px;
+  left: 515px;
   right: 0;
 }
 
@@ -46,10 +46,18 @@ table * {
 .input-table * {
   border: 2px solid #dddddd;
   font-size: 18px;
-  padding-left: 10px;
-  padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+.input-table td {
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.input-table th {
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .input-table input {
@@ -57,7 +65,7 @@ table * {
   margin: 0px;
   border-width: 0px;
   border: none;
-  width: 60px;
+  width: 70px;
 }
 
 .input-table input.wide {

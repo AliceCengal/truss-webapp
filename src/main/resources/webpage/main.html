@@ -72,6 +72,20 @@
             </tr>
         </table>
 
+        <h3 ng-click="addBeamSpec()">Beam Specification Table [+]</h3>
+        <table class="input-table">
+            <tr>
+                <th>#</th>
+                <th>Cross-sectional Area</th>
+                <th>Elasticity</th>
+            </tr>
+            <tr ng-repeat="type in inputSet.listBeamTypes()">
+                <td>{{type.id}}</td>
+                <td><input type="number" ng-model="type.area" class="wide"></td>
+                <td><input type="number" ng-model="type.elasticity" class="wide"></td>
+            </tr>
+        </table>
+
         <h3 ng-click="addMember()">Member Table [+]</h3>
         <table class="input-table">
             <tr>
@@ -85,20 +99,6 @@
                 <td><input type="number" ng-model="member.jointLeft"></td>
                 <td><input type="number" ng-model="member.jointRight"></td>
                 <td><input type="number" ng-model="member.beamId"></td>
-            </tr>
-        </table>
-
-        <h3 ng-click="addBeamSpec()">Beam Specification Table [+]</h3>
-        <table class="input-table">
-            <tr>
-                <th>#</th>
-                <th>Cross-sectional Area</th>
-                <th>Elasticity</th>
-            </tr>
-            <tr ng-repeat="type in inputSet.listBeamTypes()">
-                <td>{{type.id}}</td>
-                <td><input type="number" ng-model="type.area" class="wide"></td>
-                <td><input type="number" ng-model="type.elasticity" class="wide"></td>
             </tr>
         </table>
 
