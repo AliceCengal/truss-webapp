@@ -24,19 +24,20 @@ body {
 
 .trussmain {
   margin: 15px;
-  padding-right: 15px;
-  padding-left: 15px;
-  padding-bottom: 15px;
   background-color:white;
 }
 
 .trussmain.datainput {
   width: 500px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 15px;
 }
 
-.trussmain.diagram {
+.trussmain.right-pane {
   left: 515px;
   right: 0;
+  padding: 0px;
 }
 
 table * {
@@ -79,4 +80,9 @@ table * {
 
 .title-input * {
   padding-right: 10px;
+}
+
+.truss-diagram {
+  padding: 0px;
+  background-color: teal;
 }
