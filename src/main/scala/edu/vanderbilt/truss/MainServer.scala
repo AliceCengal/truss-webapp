@@ -94,6 +94,9 @@ trait MainService extends HttpService {
       } ~
       indexPage
     } ~
+    path("") {
+      getFromResource("webpage/main.html")
+    } ~
     getFromResourceDirectory("webpage")
 
   def notFoundPage = getFromResource("webpage/not_found.html")

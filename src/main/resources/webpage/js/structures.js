@@ -10,7 +10,28 @@ var Joint = (function() {
         this.isRestraintY = false;
         this.loadX = 0.0;
         this.loadY = 0.0;
+
+        this.positionString = "";
+        this.loadString = "";
+        this.restraintString = "";
     }
+
+    Joint.prototype.compareId = function(other) {
+        if (this.id > other.id) { return -1; }
+        else if (this.id < other.id) { return 1; }
+        else return 0;
+    };
+
+    Joint.prototype.copy = function(other) {
+        this.id = other.id;
+        this.x = other.x;
+        this.y = other.y;
+        this.isRestraintX = other.isRestraintX;
+        this.isRestraintY = other.isRestraintY;
+        this.loadX = other.loadX;
+        this.loadY = other.loadY;
+    };
+
     return Joint;
 })();
 
@@ -22,6 +43,15 @@ var Member = (function() {
         this.area = area;
         this.elasticity = 0.0;
     }
+
+    Member.prototype.copy = function(other) {
+        this.id = other.id;
+        this.jointLeft = other.jointLeft;
+        this.jointRight = other.jointRight;
+        this.area = other.area;
+        this.elasticity = other.elasticity;
+    }
+
     return Member;
 })();
 
@@ -46,8 +76,18 @@ var InputSet = (function() {
     InputSet.prototype.copyFrom = function(other) {
         this.studentId = other.studentId;
         this.inputSetId = other.inputSetId;
-        this.jointSet = other.jointSet;
-        this.memberSet = other.memberSet;
+
+        for (var oj in other.jointSet) {
+            var nj = new Joint(0,0,0);
+            nj.copy(other.jointSet[oj]);
+            this.jointSet.push(nj);
+        }
+
+        for (var om in other.memberSet) {
+            var nm = new Member(0, 0, 0, 0);
+            nm.copy(other.memberSet[om]);
+            this.memberSet.push(nm);
+        }
 
         for (var m in this.memberSet) {
             var catalogued = false;
