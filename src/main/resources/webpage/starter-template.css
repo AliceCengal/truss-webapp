@@ -85,3 +85,7 @@ table * {
 .truss-diagram {
   padding: 0px;
 }
+
+.joint-diagram {
+  fill: #006682;
+}

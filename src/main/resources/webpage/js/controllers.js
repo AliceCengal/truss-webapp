@@ -68,6 +68,7 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
         var m = new Member($scope.inputSet.memberSet.length + 1, 1, 1, firstBeam.area);
         m.elasticity = firstBeam.elasticity;
         $scope.inputSet.addMember(m);
+        $scope.diagram = new TrussDiagram($scope.inputSet);
     }
 
     $scope.addBeamSpec = function() {
