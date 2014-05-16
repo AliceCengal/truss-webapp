@@ -76,9 +76,11 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
     $scope.zoom = 1;
 
     $scope.jointCenter = function() {
+        var len = $scope.inputSet.jointSet.length;
         return $scope.inputSet.jointSet
             .map(function(j) { return [j.x, j.y]; })
-            .reduce(function(a, b) { return [(a[0] + b[0])/2, (a[1] + b[1])/2]; });
+            .map(function(xy) { return [xy[0]/len, xy[1]/len]; })
+            .reduce(function(a, b) { return [(a[0] + b[0]), (a[1] + b[1])]; });
     }
 
     $scope.diagramDimension = function() {
