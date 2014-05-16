@@ -8,8 +8,6 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
     $scope.inputSet.addJoint(new Joint(1, 0, 0));
     $scope.inputSet.addMember(new Member(1, 1, 1, 0.0));
 
-    $scope.diagram = new TrussDiagram($scope.inputSet);
-
     $scope.isEditingTitle = false;
 
     var compareId = function(a, b) {
@@ -18,6 +16,8 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
         else return 0;
     }
 
+    /// BEGIN Navbar buttons
+
     $scope.clickSample = function() {
         console.log("Sample Clicked");
         $http.get("api/sample/foo").success(function(data) {
@@ -25,7 +25,6 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
             $scope.inputSet.copyFrom(data);
             $scope.inputSet.jointSet.sort(compareId);
             $scope.inputSet.memberSet.sort(compareId);
-            $scope.diagram = new TrussDiagram($scope.inputSet);
         });
     };
 
@@ -33,8 +32,11 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
         $scope.inputSet = new InputSet();
         $scope.inputSet.addJoint(new Joint(1, 0, 0));
         $scope.inputSet.addMember(new Member(1, 1, 1, 0.0));
-        $scope.diagram = new TrussDiagram($scope.inputSet);
     };
+
+    /// END Navbar buttons
+
+    /// BEGIN Editing the title
 
     $scope.clickTitle = function() {
         $scope.isEditingTitle = true;
@@ -48,19 +50,12 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
         $scope.titleInput = "";
     };
 
-    $scope.$watch(function() {
-        $scope.diagram.update();
-    });
+    /// END Editing the title
 
-    $scope.submitJoint = function() {
-        //$scope.inputSet.jointSet.push($scope.editingJoint);
-        console.log($scope.inputSet.jointSet);
-        //$scope.editingJoint = new Joint($scope.inputSet.jointSet + 1, 0, 0);
-    };
+    /// BEGIN Adding new rows to the tables
 
     $scope.addJoint = function() {
         $scope.inputSet.addJoint(new Joint($scope.inputSet.jointSet.length + 1, 0, 0));
-        $scope.diagram = new TrussDiagram($scope.inputSet);
     }
 
     $scope.addMember = function() {
@@ -68,11 +63,38 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
         var m = new Member($scope.inputSet.memberSet.length + 1, 1, 1, firstBeam.area);
         m.elasticity = firstBeam.elasticity;
         $scope.inputSet.addMember(m);
-        $scope.diagram = new TrussDiagram($scope.inputSet);
     }
 
     $scope.addBeamSpec = function() {
         $scope.inputSet.addBeamSpec(new BeamType($scope.inputSet.listBeamTypes().length + 1, 0, 0));
     }
+
+    /// END Adding new rows to the tables
+
+    /// BEGIN Diagram
+
+    $scope.jointCenter = function() {
+        return $scope.inputSet.jointSet
+            .map(function(j) { return [j.x, j.y]; })
+            .reduce(function(a, b) { return [(a[0] + b[0])/2, (a[1] + b[1])/2]; });
+    }
+
+
+    $scope.diagramDimension = function() {
+        var svg = d3.select(".truss-diagram")[0][0];
+        return [svg.clientWidth, svg.clientHeight];
+    }
+
+    $scope.correctHorizontal = function(x) {
+        return x + ($scope.diagramDimension()[0])/2 - $scope.jointCenter()[0];
+    }
+
+    $scope.correctVertical = function(y) {
+        return y + ($scope.diagramDimension()[1])/2 - $scope.jointCenter()[1];
+    }
+
+    /*$scope.$watch(function() {
+        console.log($scope.diagramCenter());
+    }) */
 
 });

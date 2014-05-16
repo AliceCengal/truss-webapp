@@ -106,7 +106,22 @@
     </div>
 
     <div class="trussmain right-pane app-col">
-        <svg class="truss-diagram"></svg>
+        <svg class="truss-diagram" ng-model="diagrampane">
+
+            <circle class="joint-diagram"
+                    ng-repeat="joint in inputSet.jointSet"
+                    ng-attr-cx="{{correctHorizontal(joint.x)}}"
+                    ng-attr-cy="{{correctVertical(joint.y)}}"
+                    r="10"></circle>
+            <line ng-repeat="member in inputSet.memberSet"
+                    stroke="green"
+                    stroke-width="2"
+                    ng-attr-x1="{{correctHorizontal(inputSet.jointForId(member.jointLeft).x)}}"
+                    ng-attr-y1="{{correctVertical(inputSet.jointForId(member.jointLeft).y)}}"
+                    ng-attr-x2="{{correctHorizontal(inputSet.jointForId(member.jointRight).x)}}"
+                    ng-attr-y2="{{correctVertical(inputSet.jointForId(member.jointRight).y)}}"></line>
+
+        </svg>
     </div>
 
 </div>
