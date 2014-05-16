@@ -120,12 +120,12 @@
                   ng-attr-x2="{{correctHorizontal(inputSet.jointForId(member.jointRight).x)}}"
                   ng-attr-y2="{{correctVertical(inputSet.jointForId(member.jointRight).y)}}"></line>
 
-            <circle class="joint-diagram"
-                    ng-repeat="joint in inputSet.jointSet"
-                    ng-attr-cx="{{correctHorizontal(joint.x)}}"
-                    ng-attr-cy="{{correctVertical(joint.y)}}"
-                    r="10"></circle>
-            
+            <g ng-repeat="joint in inputSet.jointSet"
+                    ng-attr-transform="translate({{correctHorizontal(joint.x)}},{{correctVertical(joint.y)}})">
+                <circle class="joint-diagram" cx="0" cy="0" r="10"></circle>
+                <text x="15" y="15" dy=".50em">{{joint.id}}</text>
+            </g>
+
         </svg>
     </div>
 

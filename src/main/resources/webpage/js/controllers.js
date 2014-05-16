@@ -91,7 +91,7 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
     }
 
     $scope.correctVertical = function(y) {
-        return ($scope.diagramDimension()[1])/2 + (y - $scope.jointCenter()[1]) * $scope.zoom;
+        return ($scope.diagramDimension()[1])/2 - (y - $scope.jointCenter()[1]) * $scope.zoom;
     }
 
     $scope.zoomPlus = function() {

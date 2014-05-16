@@ -96,3 +96,7 @@ table * {
   bottom: 0;
   margin: 30px;
 }
+
+.corner * {
+  border: 2px solid #dddddd;
+}
