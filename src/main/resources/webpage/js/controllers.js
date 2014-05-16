@@ -73,12 +73,13 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
 
     /// BEGIN Diagram
 
+    $scope.zoom = 1;
+
     $scope.jointCenter = function() {
         return $scope.inputSet.jointSet
             .map(function(j) { return [j.x, j.y]; })
             .reduce(function(a, b) { return [(a[0] + b[0])/2, (a[1] + b[1])/2]; });
     }
-
 
     $scope.diagramDimension = function() {
         var svg = d3.select(".truss-diagram")[0][0];
@@ -86,11 +87,19 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
     }
 
     $scope.correctHorizontal = function(x) {
-        return x + ($scope.diagramDimension()[0])/2 - $scope.jointCenter()[0];
+        return ($scope.diagramDimension()[0])/2 + (x - $scope.jointCenter()[0]) * $scope.zoom;
     }
 
     $scope.correctVertical = function(y) {
-        return y + ($scope.diagramDimension()[1])/2 - $scope.jointCenter()[1];
+        return ($scope.diagramDimension()[1])/2 + (y - $scope.jointCenter()[1]) * $scope.zoom;
+    }
+
+    $scope.zoomPlus = function() {
+        $scope.zoom = $scope.zoom * 1.2;
+    }
+
+    $scope.zoomMinus = function() {
+        $scope.zoom = $scope.zoom * 0.8333333333;
     }
 
     /*$scope.$watch(function() {

@@ -89,3 +89,10 @@ table * {
 .joint-diagram {
   fill: #006682;
 }
+
+.corner {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 30px;
+}
