@@ -1,8 +1,8 @@
 'use strict';
 
-var trussApp = angular.module('TrussApp', ['TrussServices']);
+var trussControllers = angular.module('TrussControllers', []);
 
-trussApp.controller('InputPaneCtrl', function($scope, $http) {
+trussControllers.controller('InputPaneCtrl', function($scope, $http) {
 
     $scope.inputSet = new InputSet();
     $scope.inputSet.addJoint(new Joint(1, 0, 0));
@@ -142,3 +142,7 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
     }) */
 
 });
+
+trussControllers.controller('DatatableCtrl', function($scope) {});
+
+trussControllers.controller('LoginCtrl', function($scope) {});
