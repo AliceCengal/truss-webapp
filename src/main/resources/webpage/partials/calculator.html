@@ -15,7 +15,6 @@
         <!--/.nav-collapse -->
     </div>
 </div>
-
 <div class="trusswin app-row app-col">
     <div class="trussmain datainput app-col scroll-y">
         <h2 ng-show="!isEditingTitle" ng-click="clickTitle()">{{inputSet.properName()}}</h2>
@@ -25,7 +24,6 @@
                 <td><a ng-click="doneTitleEditing()">Done</a></td>
             </tr>
         </table>
-
         <h3 ng-click="addJoint()">Joint Table [+]</h3>
         <table class="input-table">
             <tr>
@@ -44,7 +42,6 @@
                 <td><input type="checkbox" ng-model="joint.isRestraintY"></td>
             </tr>
         </table>
-
         <h3 ng-click="addBeamSpec()">Beam Specification Table [+]</h3>
         <table class="input-table">
             <tr>
@@ -58,7 +55,6 @@
                 <td><input type="number" ng-model="type.elasticity" class="wide"></td>
             </tr>
         </table>
-
         <h3 ng-click="addMember()">Member Table [+]</h3>
         <table class="input-table">
             <tr>
@@ -74,53 +70,53 @@
                 <td><input type="number" ng-model="member.beamId"></td>
             </tr>
         </table>
-
     </div>
-
     <div class="trussmain right-pane app-col">
+        <ul class="nav nav-tabs">
+            <li ng-class="{'active':isShowingDiagram}">
+                <a href="" ng-click="showDiagram()">Diagram</a></li>
+            <li ng-class="{'active':(!isShowingDiagram)}">
+                <a href="" ng-click="showResult()">Result</a></li>
+        </ul>
+        <div class="truss-diagram app-row">
+            <svg>
+                <g ng-attr-transform="translate({{axis}},0)"
+                   ng-repeat="axis in horizontalAxisSet()">
+                    <line class="diagram-grid"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          ng-attr-y2="{{diagramDimension()[1]}}"></line>
+                    <text x="3" y="13" class="diagram-grid-label">
+                        {{decorrectHorizontal(axis).toFixed(0)}}</text>
+                </g>
+                <g ng-attr-transform="translate(0,{{axis}})" ng-repeat="axis in verticalAxisSet()">
+                    <line class="diagram-grid"
+                          x1="0"
+                          y1="0"
+                          ng-attr-x2="{{diagramDimension()[0]}}"
+                          y2="0"></line>
+                    <text x="3" y="-5" class="diagram-grid-label">
+                        {{decorrectVertical(axis).toFixed(0)}}</text>
+                </g>
+                <line ng-repeat="member in inputSet.memberSet"
+                      stroke="green"
+                      stroke-width="2"
+                      ng-attr-x1="{{correctHorizontal(inputSet.jointForId(member.jointLeft).x)}}"
+                      ng-attr-y1="{{correctVertical(inputSet.jointForId(member.jointLeft).y)}}"
+                      ng-attr-x2="{{correctHorizontal(inputSet.jointForId(member.jointRight).x)}}"
+                      ng-attr-y2="{{correctVertical(inputSet.jointForId(member.jointRight).y)}}"></line>
+                <g ng-repeat="joint in inputSet.jointSet"
+                   ng-attr-transform="translate({{correctHorizontal(joint.x)}},{{correctVertical(joint.y)}})">
+                    <circle class="joint-diagram" cx="0" cy="0" r="10"></circle>
+                    <text x="15" y="15" dy=".50em">{{joint.id}}</text>
+                </g>
+            </svg>
+        </div>
         <div class="corner">
             <input type="image" src="res/button_up.png" ng-click="zoomPlus()"><br/>
             <input type="image" src="res/button_down.png" ng-click="zoomMinus()">
         </div>
-        <svg class="truss-diagram" ng-model="diagrampane">
-
-            <g ng-attr-transform="translate({{axis}},0)"
-               ng-repeat="axis in horizontalAxisSet()">
-                <line class="diagram-grid"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      ng-attr-y2="{{diagramDimension()[1]}}"></line>
-                <text x="3" y="13" class="diagram-grid-label">
-                    {{decorrectHorizontal(axis).toFixed(0)}}</text>
-            </g>
-
-            <g ng-attr-transform="translate(0,{{axis}})" ng-repeat="axis in verticalAxisSet()">
-                <line class="diagram-grid"
-                      x1="0"
-                      y1="0"
-                      ng-attr-x2="{{diagramDimension()[0]}}"
-                      y2="0"></line>
-                <text x="3" y="-5" class="diagram-grid-label">
-                    {{decorrectVertical(axis).toFixed(0)}}</text>
-            </g>
-
-            <line ng-repeat="member in inputSet.memberSet"
-                  stroke="green"
-                  stroke-width="2"
-                  ng-attr-x1="{{correctHorizontal(inputSet.jointForId(member.jointLeft).x)}}"
-                  ng-attr-y1="{{correctVertical(inputSet.jointForId(member.jointLeft).y)}}"
-                  ng-attr-x2="{{correctHorizontal(inputSet.jointForId(member.jointRight).x)}}"
-                  ng-attr-y2="{{correctVertical(inputSet.jointForId(member.jointRight).y)}}"></line>
-
-            <g ng-repeat="joint in inputSet.jointSet"
-               ng-attr-transform="translate({{correctHorizontal(joint.x)}},{{correctVertical(joint.y)}})">
-                <circle class="joint-diagram" cx="0" cy="0" r="10"></circle>
-                <text x="15" y="15" dy=".50em">{{joint.id}}</text>
-            </g>
-
-        </svg>
     </div>
-
 </div>
 

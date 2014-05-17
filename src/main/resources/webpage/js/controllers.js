@@ -137,6 +137,28 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
             .concat(range(width/2 + interval, width, interval));
     }
 
+    /// END Diagram
+
+    /// BEGIN Tab Navigation
+
+    $scope.isShowingDiagram = true;
+
+    $scope.showDiagram = function() {
+        console.log("Show diagram is called");
+        if (!$scope.isShowingDiagram) {
+            $scope.isShowingDiagram = true;
+        }
+        console.log($scope.isShowingDiagram)
+    }
+
+    $scope.showResult = function() {
+        console.log("show result is called");
+        if ($scope.isShowingDiagram) {
+            $scope.isShowingDiagram = false;
+        }
+        console.log($scope.isShowingDiagram)
+    }
+
     /*$scope.$watch(function() {
         console.log($scope.diagramCenter());
     }) */

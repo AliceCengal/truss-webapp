@@ -5,7 +5,7 @@ var trussService = angular.module('TrussServices', []);
 trussService.factory('Cache', function($http) {
 
     var cache = {
-        hasValue:false;
+        hasValue:false
     };
 
     cache.push = function(val) {
