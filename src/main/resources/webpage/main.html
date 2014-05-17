@@ -112,6 +112,27 @@
         </div>
         <svg class="truss-diagram" ng-model="diagrampane">
 
+            <g ng-attr-transform="translate({{axis}},0)"
+               ng-repeat="axis in horizontalAxisSet()">
+                <line class="diagram-grid"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      ng-attr-y2="{{diagramDimension()[1]}}"></line>
+                <text x="3" y="13" class="diagram-grid-label">
+                    {{decorrectHorizontal(axis).toFixed(0)}}</text>
+            </g>
+
+            <g ng-attr-transform="translate(0,{{axis}})" ng-repeat="axis in verticalAxisSet()">
+                <line class="diagram-grid"
+                      x1="0"
+                      y1="0"
+                      ng-attr-x2="{{diagramDimension()[0]}}"
+                      y2="0"></line>
+                <text x="3" y="-5" class="diagram-grid-label">
+                    {{decorrectVertical(axis).toFixed(0)}}</text>
+            </g>
+
             <line ng-repeat="member in inputSet.memberSet"
                   stroke="green"
                   stroke-width="2"

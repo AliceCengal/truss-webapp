@@ -96,12 +96,45 @@ trussApp.controller('InputPaneCtrl', function($scope, $http) {
         return ($scope.diagramDimension()[1])/2 - (y - $scope.jointCenter()[1]) * $scope.zoom;
     }
 
+    $scope.decorrectHorizontal = function(X) {
+        return $scope.jointCenter()[0] + (X - $scope.diagramDimension()[0]/2)/$scope.zoom
+    }
+
+    $scope.decorrectVertical = function(Y) {
+        return $scope.jointCenter()[1] - (Y - $scope.diagramDimension()[1]/2)/$scope.zoom
+    }
+
+    $scope.zoomFactor = 1.2;
+
     $scope.zoomPlus = function() {
-        $scope.zoom = $scope.zoom * 1.2;
+        $scope.zoom = $scope.zoom * $scope.zoomFactor;
     }
 
     $scope.zoomMinus = function() {
-        $scope.zoom = $scope.zoom * 0.8333333333;
+        $scope.zoom = $scope.zoom / $scope.zoomFactor;
+    }
+
+    $scope.longerDimension = function() {
+        var dims = $scope.diagramDimension();
+        return (dims[0] > dims[1])? dims[0] : dims[1];
+    }
+
+    $scope.gridInterval = function() {
+        return $scope.longerDimension() / 9.5;
+    }
+
+    $scope.horizontalAxisSet = function() {
+        var interval = $scope.gridInterval();
+        var width = $scope.diagramDimension()[0];
+        return range(width/2, 0, interval)
+            .concat(range(width/2 + interval, width, interval));
+    }
+
+    $scope.verticalAxisSet = function() {
+        var interval = $scope.gridInterval();
+        var width = $scope.diagramDimension()[1];
+        return range(width/2, 0, interval)
+            .concat(range(width/2 + interval, width, interval));
     }
 
     /*$scope.$watch(function() {

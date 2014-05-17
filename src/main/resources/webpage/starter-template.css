@@ -29,7 +29,6 @@ body {
 
 .trussmain.datainput {
   width: 500px;
-  padding-right: 15px;
   padding-left: 15px;
   padding-bottom: 15px;
 }
@@ -88,6 +87,21 @@ table * {
 
 .joint-diagram {
   fill: #006682;
+}
+
+.diagram-grid {
+  stroke: #eeeeee;
+  stroke-width: 1;
+}
+
+.diagram-grid-label {
+  fill: #993d1b;
+  font-size: 8;
+}
+
+.member-diagram {
+  stroke: green;
+  stroke-width: 2;
 }
 
 .corner {
