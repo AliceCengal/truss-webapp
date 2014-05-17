@@ -280,7 +280,8 @@ var range = function(start, end, step) {
     var typeofEnd = typeof end;
 
     if (step === 0) {
-        throw TypeError("Step cannot be zero.");
+        //throw TypeError("Step cannot be zero.");
+        return range;
     }
 
     if (typeofStart == "undefined" || typeofEnd == "undefined") {

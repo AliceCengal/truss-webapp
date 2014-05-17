@@ -144,20 +144,51 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
     $scope.isShowingDiagram = true;
 
     $scope.showDiagram = function() {
-        console.log("Show diagram is called");
         if (!$scope.isShowingDiagram) {
             $scope.isShowingDiagram = true;
         }
-        console.log($scope.isShowingDiagram)
     }
 
     $scope.showResult = function() {
-        console.log("show result is called");
         if ($scope.isShowingDiagram) {
             $scope.isShowingDiagram = false;
         }
-        console.log($scope.isShowingDiagram)
+        $scope.computeResult();
     }
+
+    /// END Tab Navigation
+
+    /// BEGIN Result Tab
+
+    $scope.isWaitingForResult = false;
+    $scope.resultSet = {};
+
+    $scope.log10 = function(x) { return Math.log(x)/Math.LN10; }
+
+    $scope.sigFig = function(x) {
+        if (x === 0.0) { return 0.0; }
+        var sign = (x >= 0) ? 1 : -1;
+        var ordinal = $scope.log10(Math.abs(x));
+        if (-3 < ordinal && ordinal < 3) {
+            return x.toPrecision(3);
+        } else {
+            return x.toExponential(3);
+        }
+    }
+
+    $scope.computeResult = function() {
+        $scope.isWaitingForResult = true;
+        $http.post("api/computation", JSON.stringify($scope.inputSet))
+            .success(function(data) {
+                $scope.resultSet = data;
+                $scope.resultSet.jointResultSet.sort(compareId);
+                $scope.resultSet.memberResultSet.sort(compareId);
+                $scope.isWaitingForResult = false;
+                console.log($scope.resultSet);
+            });
+    }
+
+    /// END Result Tab
 
     /*$scope.$watch(function() {
         console.log($scope.diagramCenter());

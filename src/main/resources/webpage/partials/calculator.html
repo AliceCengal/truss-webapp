@@ -78,7 +78,7 @@
             <li ng-class="{'active':(!isShowingDiagram)}">
                 <a href="" ng-click="showResult()">Result</a></li>
         </ul>
-        <div class="truss-diagram app-row">
+        <div class="truss-diagram app-row" ng-show="isShowingDiagram">
             <svg>
                 <g ng-attr-transform="translate({{axis}},0)"
                    ng-repeat="axis in horizontalAxisSet()">
@@ -112,10 +112,38 @@
                     <text x="15" y="15" dy=".50em">{{joint.id}}</text>
                 </g>
             </svg>
+            <div class="corner">
+                <input type="image" src="res/button_up.png" ng-click="zoomPlus()"><br/>
+                <input type="image" src="res/button_down.png" ng-click="zoomMinus()">
+            </div>
         </div>
-        <div class="corner">
-            <input type="image" src="res/button_up.png" ng-click="zoomPlus()"><br/>
-            <input type="image" src="res/button_down.png" ng-click="zoomMinus()">
+        <div ng-show="!isShowingDiagram" class="truss-result app-col app-row scroll-y">
+            <h3>Joint Result Table</h3>
+            <table class="result-table">
+                <tr>
+                    <th>#</th>
+                    <th colspan="2">Displacement (x,y)</th>
+                    <th colspan="2">Reaction (x,y)</th>
+                </tr>
+                <tr ng-repeat="jointResult in resultSet.jointResultSet">
+                    <td>{{jointResult.id}}</td>
+                    <td>{{sigFig(jointResult.displacementX)}}</td>
+                    <td>{{sigFig(jointResult.displacementY)}}</td>
+                    <td>{{sigFig(jointResult.reactionX)}}</td>
+                    <td>{{sigFig(jointResult.reactionY)}}</td>
+                </tr>
+            </table>
+            <h3>Member Result Table</h3>
+            <table class="result-table">
+                <tr>
+                    <th>#</th>
+                    <th>Force</th>
+                </tr>
+                <tr ng-repeat="memberResult in resultSet.memberResultSet">
+                    <td>{{memberResult.id}}</td>
+                    <td>{{sigFig(memberResult.force)}}</td>
+                </tr>
+            </table>
         </div>
     </div>
 </div>
