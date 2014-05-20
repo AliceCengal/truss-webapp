@@ -2,7 +2,7 @@
 <div class="navbar navbar-inverse navbar-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand custom-brand" href="#/calculator">Truss Web App</a>
+            <a class="navbar-brand custom-brand" href="#/calculator">PAVE Truss Web App</a>
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
@@ -24,7 +24,7 @@
                 <td><a ng-click="doneTitleEditing()">Done</a></td>
             </tr>
         </table>
-        <h3 ng-click="addJoint()">Joint Table [+]</h3>
+        <h3>Joint Table</h3>
         <table class="input-table">
             <tr>
                 <th>#</th>
@@ -42,7 +42,8 @@
                 <td><input type="checkbox" ng-model="joint.isRestraintY"></td>
             </tr>
         </table>
-        <h3 ng-click="addBeamSpec()">Beam Specification Table [+]</h3>
+        <button ng-click="addJoint()"  class="table-mod">+</button><button ng-click="removeJoint()"  class="table-mod">-</button>
+        <h3>Property Table</h3>
         <table class="input-table">
             <tr>
                 <th>#</th>
@@ -55,13 +56,14 @@
                 <td><input type="number" ng-model="type.elasticity" class="wide"></td>
             </tr>
         </table>
-        <h3 ng-click="addMember()">Member Table [+]</h3>
+        <button ng-click="addBeamSpec()"  class="table-mod">+</button><button ng-click="removeBeamSet()"  class="table-mod">-</button>
+        <h3>Member Table</h3>
         <table class="input-table">
             <tr>
                 <th>#</th>
                 <th>Left Joint</th>
                 <th>Right Joint</th>
-                <th>Beam Type</th>
+                <th>Property Type</th>
             </tr>
             <tr ng-repeat="member in inputSet.memberSet">
                 <td>{{member.id}}</td>
@@ -70,6 +72,7 @@
                 <td><input type="number" ng-model="member.beamId"></td>
             </tr>
         </table>
+        <button ng-click="addMember()" class="table-mod">+</button><button ng-click="removeMember()"  class="table-mod">-</button>
     </div>
     <div class="trussmain right-pane app-col">
         <ul class="nav nav-tabs">

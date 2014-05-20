@@ -79,6 +79,10 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
         $scope.inputSet.addJoint(new Joint($scope.inputSet.jointSet.length + 1, 0, 0));
     }
 
+    $scope.removeJoint = function() {
+        $scope.inputSet.jointSet.pop();
+    }
+
     // Add a new Memner to the inputSet, with its Id set
     // to ine higher than the current highest.
     //
@@ -90,6 +94,10 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
         $scope.inputSet.addMember(m);
     }
 
+    $scope.removeMember = function() {
+        $scope.inputSet.memberSet.pop();
+    }
+
     // Add a new BeamSpec to the inputSet, with its Id set
     // to one higher than the current highest.
     //
@@ -97,6 +105,10 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
     $scope.addBeamSpec = function() {
         $scope.inputSet.addBeamSpec(
                 new BeamType($scope.inputSet.listBeamTypes().length + 1, 0, 0));
+    }
+
+    $scope.removeBeamSet = function() {
+        $scope.inputSet.beamSet.pop();
     }
 
     /// END Adding new rows to the tables
