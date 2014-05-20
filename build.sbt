@@ -8,8 +8,6 @@ scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8", "-featur
 
 name          := "Truss Webapp"
 
-exportJars    := true
-
 resolvers ++= Seq(
     "spray repo" at "http://repo.spray.io/"
 )

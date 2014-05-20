@@ -8,8 +8,8 @@
             <ul class="nav navbar-nav">
                 <li><a href="" ng-click="clearInputSet()">Clear</a></li>
                 <li><a href="" ng-click="loadSample()">Sample</a></li>
-                <li><a href="#/datatables">Data Tables</a></li>
-                <li><a href="#/login">Login</a></li>
+                <!-- <li><a href="#/datatables">Data Tables</a></li>
+                <li><a href="#/login">Login</a></li> -->
             </ul>
         </div>
         <!--/.nav-collapse -->
@@ -17,7 +17,13 @@
 </div>
 <div class="trusswin app-row app-col">
     <div class="trussmain datainput app-col scroll-y">
-        <h2 ng-show="!isEditingTitle" ng-click="clickTitle()">{{inputSet.properName()}}</h2>
+
+        <table class="header-inputs">
+            <tr><td>Name</td><td>:</td><td><input type="text"></td></tr>
+            <tr><td>Group Id</td><td>:</td><td><input type="text"></td></tr>
+            <tr><td>Time</td><td>:</td><td><input value="{{time()}}"></td></tr>
+            <tr><td>Date</td><td>:</td><td><input value="{{date()}}"></td></tr>
+        </table>
         <table ng-show="isEditingTitle" class="title-input">
             <tr>
                 <td><input type="text" ng-model="titleInput"></td>
@@ -42,7 +48,11 @@
                 <td><input type="checkbox" ng-model="joint.isRestraintY"></td>
             </tr>
         </table>
-        <button ng-click="addJoint()"  class="table-mod">+</button><button ng-click="removeJoint()"  class="table-mod">-</button>
+        <div class="table-mod">
+            <button ng-click="addJoint()">+</button>
+            <button ng-click="removeJoint()">-</button>
+            <button ng-click="undoJoint()">Undo</button>
+        </div>
         <h3>Property Table</h3>
         <table class="input-table">
             <tr>
@@ -56,7 +66,12 @@
                 <td><input type="number" ng-model="type.elasticity" class="wide"></td>
             </tr>
         </table>
-        <button ng-click="addBeamSpec()"  class="table-mod">+</button><button ng-click="removeBeamSet()"  class="table-mod">-</button>
+        <div class="table-mod">
+            <button ng-click="addBeamSpec()">+</button>
+            <button ng-click="removeBeamSpec()">-</button>
+            <button ng-click="undoBeam()">Undo</button>
+        </div>
+
         <h3>Member Table</h3>
         <table class="input-table">
             <tr>
@@ -72,14 +87,19 @@
                 <td><input type="number" ng-model="member.beamId"></td>
             </tr>
         </table>
-        <button ng-click="addMember()" class="table-mod">+</button><button ng-click="removeMember()"  class="table-mod">-</button>
+        <div class="table-mod">
+            <button ng-click="addMember()">+</button>
+            <button ng-click="removeMember()">-</button>
+            <button ng-click="undoMember()">Undo</button>
+        </div>
+
     </div>
     <div class="trussmain right-pane app-col">
         <ul class="nav nav-tabs">
             <li ng-class="{'active':isShowingDiagram}">
                 <a href="" ng-click="showDiagram()">Diagram</a></li>
             <li ng-class="{'active':(!isShowingDiagram)}">
-                <a href="" ng-click="showResult()">Result</a></li>
+                <a href="" ng-click="showResult()">Results</a></li>
         </ul>
         <div class="truss-diagram app-row" ng-show="isShowingDiagram">
             <svg>

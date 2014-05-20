@@ -37,6 +37,7 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
     // Unit -> Unit
     $scope.clearInputSet = function() {
         $scope.inputSet = (new InputSet()).populate();
+        $scope.resultSet = {};
     };
 
     /// END Navbar buttons
@@ -77,11 +78,23 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
     // Unit -> Unit
     $scope.addJoint = function() {
         $scope.inputSet.addJoint(new Joint($scope.inputSet.jointSet.length + 1, 0, 0));
+        $scope.jointCache = [];
     }
 
     $scope.removeJoint = function() {
-        $scope.inputSet.jointSet.pop();
+        if ($scope.inputSet.jointSet.length > 0) {
+            $scope.jointCache.push($scope.inputSet.jointSet.pop());
+        }
     }
+
+    $scope.undoJoint = function() {
+        if ($scope.jointCache.length > 0) {
+            $scope.inputSet.addJoint($scope.jointCache.pop());
+            $scope.jointCache = [];
+        }
+    }
+
+    $scope.jointCache = []
 
     // Add a new Memner to the inputSet, with its Id set
     // to ine higher than the current highest.
@@ -95,8 +108,19 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
     }
 
     $scope.removeMember = function() {
-        $scope.inputSet.memberSet.pop();
+        if ($scope.inputSet.memberSet.length > 0) {
+            $scope.memberCache.push($scope.inputSet.memberSet.pop());
+        }
     }
+
+    $scope.undoMember = function() {
+        if ($scope.memberCache.length > 0) {
+            $scope.inputSet.addMember($scope.memberCache.pop());
+            $scope.memberCache = [];
+        }
+    }
+
+    $scope.memberCache = []
 
     // Add a new BeamSpec to the inputSet, with its Id set
     // to one higher than the current highest.
@@ -107,9 +131,20 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
                 new BeamType($scope.inputSet.listBeamTypes().length + 1, 0, 0));
     }
 
-    $scope.removeBeamSet = function() {
-        $scope.inputSet.beamSet.pop();
+    $scope.removeBeamSpec = function() {
+        if ($scope.inputSet.beamSet.length > 0) {
+            $scope.beamCache.push($scope.inputSet.beamSet.pop());
+        }
     }
+
+    $scope.undoBeam = function() {
+        if ($scope.beamCache.length > 0) {
+            $scope.inputSet.addBeamSpec($scope.beamCache.pop());
+            $scope.beamCache = [];
+        }
+    }
+
+    $scope.beamCache = []
 
     /// END Adding new rows to the tables
 
@@ -287,9 +322,15 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
 
     /// END Result Tab
 
-    /*$scope.$watch(function() {
-        console.log($scope.diagramCenter());
-    }) */
+    $scope.time = function() {
+        return (new Date()).toTimeString().split(" ")[0];
+    }
+
+    $scope.date = function() {
+        var d = new Date();
+        return [(d.getMonth() + 1), d.getDate(), d.getFullYear()]
+            .reduce(function(a, b) { return "" + a + "/" + b});
+    }
 
 });
 
