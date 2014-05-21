@@ -51,7 +51,7 @@
         <div class="table-mod">
             <button ng-click="addJoint()">+</button>
             <button ng-click="removeJoint()">-</button>
-            <button ng-click="undoJoint()">Undo</button>
+            <button ng-click="undoJoint()" ng-show="jointCache.length > 0">Undo</button>
         </div>
         <h3>Property Table</h3>
         <table class="input-table">
@@ -69,7 +69,7 @@
         <div class="table-mod">
             <button ng-click="addBeamSpec()">+</button>
             <button ng-click="removeBeamSpec()">-</button>
-            <button ng-click="undoBeam()">Undo</button>
+            <button ng-click="undoBeam()" ng-show="beamCache.length > 0">Undo</button>
         </div>
 
         <h3>Member Table</h3>
@@ -90,7 +90,7 @@
         <div class="table-mod">
             <button ng-click="addMember()">+</button>
             <button ng-click="removeMember()">-</button>
-            <button ng-click="undoMember()">Undo</button>
+            <button ng-click="undoMember()" ng-show="memberCache.length > 0">Undo</button>
         </div>
 
     </div>

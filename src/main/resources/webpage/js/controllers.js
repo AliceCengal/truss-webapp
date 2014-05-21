@@ -105,6 +105,7 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
         var m = new Member($scope.inputSet.memberSet.length + 1, 1, 1, firstBeam.area);
         m.elasticity = firstBeam.elasticity;
         $scope.inputSet.addMember(m);
+        $scope.memberCache = [];
     }
 
     $scope.removeMember = function() {
@@ -129,6 +130,7 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
     $scope.addBeamSpec = function() {
         $scope.inputSet.addBeamSpec(
                 new BeamType($scope.inputSet.listBeamTypes().length + 1, 0, 0));
+        $scope.beamCache = [];
     }
 
     $scope.removeBeamSpec = function() {
