@@ -15,10 +15,10 @@ object TrussApp extends App with LegacyTest {
   println("===============================================================")
   println()
 
-  this.args.toList match {
-    case "help" :: _          => printGuide()
-    case address :: port :: _ => bootServer(address, port.toInt)
-    case address :: _         => bootServer(address, 8080)
+  this.args match {
+    case Array("help")        => printGuide()
+    case Array(address, port) => bootServer(address, port.toInt)
+    case Array(address)       => bootServer(address, 8080)
     case _                    => bootServer("localhost", 8080)
   }
 

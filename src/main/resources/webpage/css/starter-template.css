@@ -113,6 +113,15 @@ table * {
   stroke-width: 2;
 }
 
+.restraint-cross {
+  stroke: #993d1b;
+  stroke-width: 4;
+}
+
+.load-arrow {
+  fill: #993d1b;
+}
+
 .corner {
   position: absolute;
   right: 0;

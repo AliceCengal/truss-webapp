@@ -171,7 +171,7 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
     //
     // Unit -> [Int, Int]
     $scope.diagramDimension = function() {
-        var svg = d3.select(".truss-diagram")[0][0];
+        var svg = document.getElementsByClassName("truss-diagram")[0];
         return [svg.clientWidth, svg.clientHeight];
     }
 

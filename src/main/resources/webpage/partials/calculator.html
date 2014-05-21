@@ -123,8 +123,7 @@
                         {{decorrectVertical(axis).toFixed(0)}}</text>
                 </g>
                 <line ng-repeat="member in inputSet.memberSet"
-                      stroke="green"
-                      stroke-width="2"
+                      class="member-diagram"
                       ng-attr-x1="{{correctHorizontal(inputSet.jointForId(member.jointLeft).x)}}"
                       ng-attr-y1="{{correctVertical(inputSet.jointForId(member.jointLeft).y)}}"
                       ng-attr-x2="{{correctHorizontal(inputSet.jointForId(member.jointRight).x)}}"
@@ -132,6 +131,33 @@
                 <g ng-repeat="joint in inputSet.jointSet"
                    ng-attr-transform="translate({{correctHorizontal(joint.x)}},{{correctVertical(joint.y)}})">
                     <circle class="joint-diagram" cx="0" cy="0" r="10"></circle>
+                    <line class="restraint-cross"
+                            x1="-20"
+                            x2="20"
+                            y1="0"
+                            y2="0"
+                            ng-attr-visibility="{{joint.isRestraintX ? 'visible' : 'hidden'}}"></line>
+                    <line class="restraint-cross"
+                            x1="0"
+                            x2="0"
+                            y1="-20"
+                            y2="20"
+                            ng-attr-visibility="{{joint.isRestraintY ? 'visible' : 'hidden'}}"></line>
+                    <polygon class="load-arrow"
+                             points="0,10 -10,30 -3,30 -3,40 3,40 3,30 10,30"
+                             ng-attr-visibility="{{(joint.loadY > 0) ? 'visible' : 'hidden'}}"></polygon>
+                    <polygon class="load-arrow"
+                             points="0,10 -10,30 -3,30 -3,40 3,40 3,30 10,30"
+                             transform="rotate(90)"
+                             ng-attr-visibility="{{(joint.loadX > 0) ? 'visible' : 'hidden'}}"></polygon>
+                    <polygon class="load-arrow"
+                             points="0,10 -10,30 -3,30 -3,40 3,40 3,30 10,30"
+                             transform="rotate(180)"
+                             ng-attr-visibility="{{(joint.loadY < 0) ? 'visible' : 'hidden'}}"></polygon>
+                    <polygon class="load-arrow"
+                             points="0,10 -10,30 -3,30 -3,40 3,40 3,30 10,30"
+                             transform="rotate(270)"
+                             ng-attr-visibility="{{(joint.loadX < 0) ? 'visible' : 'hidden'}}"></polygon>
                     <text x="15" y="15" dy=".50em">{{joint.id}}</text>
                 </g>
             </svg>
