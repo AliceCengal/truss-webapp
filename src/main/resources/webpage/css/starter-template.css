@@ -41,9 +41,14 @@ body {
 
 .table-header {
   font-size: 24px;
+  text-color: #006682;
   padding-right: 5px;
   margin-top: 20px;
   margin-bottom: 10px;
+}
+
+.table-header2 {
+  color: #006682;
 }
 
 table * {
@@ -89,13 +94,13 @@ table * {
 }
 
 .truss-diagram {
-  top: 42px;
+  top: 47px;
   bottom: 0px;
   padding: 0px;
 }
 
 .joint-diagram {
-  fill: #006682;
+  fill: black;
 }
 
 .diagram-grid {
@@ -109,7 +114,7 @@ table * {
 }
 
 .member-diagram {
-  stroke: green;
+  stroke: black;
   stroke-width: 2;
 }
 
@@ -119,7 +124,7 @@ table * {
 }
 
 .load-arrow {
-  fill: #993d1b;
+  fill: green;
 }
 
 .corner {
@@ -159,31 +164,38 @@ table * {
 }
 
 .header-inputs {
+  width: 470px;
   border: 2px solid #dddddd;
   margin-top: 15px;
   padding: 15px;
 }
 
 .header-inputs * {
-  color: #006682;
-  font-size: 24px;
-  border: none;
+  color: black;
+  font-size: 18px;
   padding-left: 15px;
   padding-right: 15px
-  margin: 0px;
-  border-width: 0px;
   text-align: left;
 }
 
-.animate-enter, .animate-move, .animate-leave
-{
-    -webkit-transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-    -moz-transition: 300ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-    -ms-transition: 300ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-    -o-transition: 300ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-    transition: 300ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+.header-inputs tr > * {
+  padding: 5px;
 }
 
-.animate-move {
-      position:relative;
+.header-inputs input {
+  text-align: left;
+  width: 380px;
+}
+
+.header-label {
+  font-weight : bold;
+}
+
+.force-col {
+  width: 200px;
+}
+
+.tab-bar {
+  padding-left: 5px;
+  padding-top: 5px;
 }

@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="" ng-click="clearInputSet()">Clear</a></li>
-                <li><a href="" ng-click="loadSample()">Sample</a></li>
+                <li><a href="" ng-click="loadSample()">Example</a></li>
                 <!-- <li><a href="#/datatables">Data Tables</a></li>
                 <li><a href="#/login">Login</a></li> -->
             </ul>
@@ -19,18 +19,16 @@
     <div class="trussmain datainput app-col scroll-y">
 
         <table class="header-inputs">
-            <tr><td>Name</td><td>:</td><td><input type="text"></td></tr>
-            <tr><td>Group Id</td><td>:</td><td><input type="text"></td></tr>
-            <tr><td>Time</td><td>:</td><td><input value="{{time()}}"></td></tr>
-            <tr><td>Date</td><td>:</td><td><input value="{{date()}}"></td></tr>
+            <tr><td class="header-label">Name</td>
+                <td><input type="text"></td></tr>
+            <tr><td class="header-label">G ID</td>
+                <td><input type="text"></td></tr>
+            <tr><td class="header-label">Date</td>
+                <td><input value="{{date()}}"></td></tr>
+            <tr><td class="header-label">Time</td>
+                <td ><input value="{{time()}}"></td></tr>
         </table>
-        <table ng-show="isEditingTitle" class="title-input">
-            <tr>
-                <td><input type="text" ng-model="titleInput"></td>
-                <td><a ng-click="doneTitleEditing()">Done</a></td>
-            </tr>
-        </table>
-        <h3>Joint Table</h3>
+        <h3 class="table-header2">Joint Table</h3>
         <table class="input-table">
             <tr>
                 <th>#</th>
@@ -53,7 +51,7 @@
             <button ng-click="removeJoint()">-</button>
             <button ng-click="undoJoint()" ng-show="jointCache.length > 0">Undo</button>
         </div>
-        <h3>Property Table</h3>
+        <h3 class="table-header2">Property Table</h3>
         <table class="input-table">
             <tr>
                 <th>#</th>
@@ -72,7 +70,7 @@
             <button ng-click="undoBeam()" ng-show="beamCache.length > 0">Undo</button>
         </div>
 
-        <h3>Member Table</h3>
+        <h3 class="table-header2">Member Table</h3>
         <table class="input-table">
             <tr>
                 <th>#</th>
@@ -95,7 +93,7 @@
 
     </div>
     <div class="trussmain right-pane app-col">
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs tab-bar">
             <li ng-class="{'active':isShowingDiagram}">
                 <a href="" ng-click="showDiagram()">Diagram</a></li>
             <li ng-class="{'active':(!isShowingDiagram)}">
@@ -109,18 +107,18 @@
                           x1="0"
                           y1="0"
                           x2="0"
-                          ng-attr-y2="{{diagramDimension()[1]}}"></line>
+                          ng-attr-y2="{{diagramDimension()[1]}}"></line> <!--
                     <text x="3" y="13" class="diagram-grid-label">
-                        {{decorrectHorizontal(axis).toFixed(0)}}</text>
+                        {{decorrectHorizontal(axis).toFixed(0)}}</text> -->
                 </g>
                 <g ng-attr-transform="translate(0,{{axis}})" ng-repeat="axis in verticalAxisSet()">
                     <line class="diagram-grid"
                           x1="0"
                           y1="0"
                           ng-attr-x2="{{diagramDimension()[0]}}"
-                          y2="0"></line>
+                          y2="0"></line> <!--
                     <text x="3" y="-5" class="diagram-grid-label">
-                        {{decorrectVertical(axis).toFixed(0)}}</text>
+                        {{decorrectVertical(axis).toFixed(0)}}</text> -->
                 </g>
                 <line ng-repeat="member in inputSet.memberSet"
                       class="member-diagram"
@@ -130,7 +128,7 @@
                       ng-attr-y2="{{correctVertical(inputSet.jointForId(member.jointRight).y)}}"></line>
                 <g ng-repeat="joint in inputSet.jointSet"
                    ng-attr-transform="translate({{correctHorizontal(joint.x)}},{{correctVertical(joint.y)}})">
-                    <circle class="joint-diagram" cx="0" cy="0" r="10"></circle>
+                    <circle class="joint-diagram" cx="0" cy="0" r="4"></circle>
                     <line class="restraint-cross"
                             x1="-20"
                             x2="20"
@@ -144,18 +142,18 @@
                             y2="20"
                             ng-attr-visibility="{{joint.isRestraintY ? 'visible' : 'hidden'}}"></line>
                     <polygon class="load-arrow"
-                             points="0,10 -10,30 -3,30 -3,40 3,40 3,30 10,30"
+                             points="0,4 -10,24 -3,24 -3,34 3,34 3,24 10,24"
                              ng-attr-visibility="{{(joint.loadY > 0) ? 'visible' : 'hidden'}}"></polygon>
                     <polygon class="load-arrow"
-                             points="0,10 -10,30 -3,30 -3,40 3,40 3,30 10,30"
+                             points="0,4 -10,24 -3,24 -3,34 3,34 3,24 10,24"
                              transform="rotate(90)"
                              ng-attr-visibility="{{(joint.loadX > 0) ? 'visible' : 'hidden'}}"></polygon>
                     <polygon class="load-arrow"
-                             points="0,10 -10,30 -3,30 -3,40 3,40 3,30 10,30"
+                             points="0,4 -10,24 -3,24 -3,34 3,34 3,24 10,24"
                              transform="rotate(180)"
                              ng-attr-visibility="{{(joint.loadY < 0) ? 'visible' : 'hidden'}}"></polygon>
                     <polygon class="load-arrow"
-                             points="0,10 -10,30 -3,30 -3,40 3,40 3,30 10,30"
+                             points="0,4 -10,24 -3,24 -3,34 3,34 3,24 10,24"
                              transform="rotate(270)"
                              ng-attr-visibility="{{(joint.loadX < 0) ? 'visible' : 'hidden'}}"></polygon>
                     <text x="15" y="15" dy=".50em">{{joint.id}}</text>
@@ -190,7 +188,7 @@
                 </tr>
                 <tr ng-repeat="memberResult in resultSet.memberResultSet">
                     <td>{{memberResult.id}}</td>
-                    <td>{{sigFig(memberResult.force)}}</td>
+                    <td class="force-col">{{sigFig(memberResult.force)}}</td>
                 </tr>
             </table>
         </div>
