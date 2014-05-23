@@ -17,7 +17,6 @@
 </div>
 <div class="trusswin app-row app-col">
     <div class="trussmain datainput app-col scroll-y">
-
         <table class="header-inputs">
             <tr><td class="header-label">Name</td>
                 <td><input type="text"></td></tr>
@@ -74,8 +73,8 @@
         <table class="input-table">
             <tr>
                 <th>#</th>
-                <th>Left Joint</th>
-                <th>Right Joint</th>
+                <th>From Joint</th>
+                <th>To Joint</th>
                 <th>Property Type</th>
             </tr>
             <tr ng-repeat="member in inputSet.memberSet">
@@ -165,7 +164,7 @@
             </div>
         </div>
         <div ng-show="!isShowingDiagram" class="truss-result app-col app-row scroll-y">
-            <h3>Joint Result Table</h3>
+            <h3>Joint Results Table</h3>
             <table class="result-table">
                 <tr>
                     <th>#</th>
@@ -180,7 +179,7 @@
                     <td>{{sigFig(jointResult.reactionY)}}</td>
                 </tr>
             </table>
-            <h3>Member Result Table</h3>
+            <h3>Member Results Table</h3>
             <table class="result-table">
                 <tr>
                     <th>#</th>
