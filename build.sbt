@@ -1,3 +1,7 @@
+import com.typesafe.sbt.SbtStartScript
+
+seq(SbtStartScript.startScriptForClassesSettings: _*)
+
 organization  := "edu.vanderbilt.truss"
 
 version       := "0.1"

@@ -3,10 +3,11 @@ package edu.vanderbilt.truss
 import java.io.File
 
 import akka.actor.{Props, ActorSystem}
-import akka.io.IO
+import akka.io.{Inet, IO}
 
 import spray.can.Http
-import com.typesafe.config.ConfigFactory
+import java.net.InetSocketAddress
+import scala.util.Properties
 
 object TrussApp extends App with LegacyTest {
 
@@ -19,7 +20,8 @@ object TrussApp extends App with LegacyTest {
     case Array("help")        => printGuide()
     case Array(address, port) => bootServer(address, port.toInt)
     case Array(address)       => bootServer(address, 8080)
-    case _                    => bootServer("localhost", 8080)
+    case _                    => bootServer("localhost",
+                                             Properties.envOrElse("PORT", "8080").toInt)
   }
 
   def printGuide() {
@@ -42,13 +44,17 @@ object TrussApp extends App with LegacyTest {
     println(s"Starting truss server at: http://$ipAddress:$portNumber/")
 
     // we need an ActorSystem to host our application in
-    implicit val system = ActorSystem("truss-webapp", ConfigFactory.load(getClass.getClassLoader))
+    implicit val system = ActorSystem("truss-webapp")
 
     // create and start our service actor
     val service = system.actorOf(Props[MainServer], "server")
 
     // start a new HTTP server on port 8080 with our service actor as the handler
-    IO(Http) ! Http.Bind(service, interface = ipAddress, port = portNumber)
+    IO(Http) ! Http.Bind(listener = service,
+                          endpoint = new InetSocketAddress(portNumber),
+                          backlog = 0,
+                          options = List.empty[Inet.SocketOption],
+                          settings = None)
 
     println("Hit any key to exit.")
     val result = readLine()
