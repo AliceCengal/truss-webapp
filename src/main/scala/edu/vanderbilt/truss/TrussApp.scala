@@ -45,7 +45,10 @@ object TrussApp extends App with LegacyTest {
 
   def bootServer(ipAddress: String, portNumber: Int) {
 
-    println(s"Starting truss server at: http://$ipAddress:$portNumber/")
+    println(s"Starting truss server at port: $portNumber/")
+
+    val add = new InetSocketAddress(portNumber)
+    println(add)
 
     // we need an ActorSystem to host our application in
     implicit val system = ActorSystem("truss-webapp")
@@ -55,7 +58,7 @@ object TrussApp extends App with LegacyTest {
 
     // start a new HTTP server on port 8080 with our service actor as the handler
     IO(Http) ! Http.Bind(listener = service,
-                          endpoint = new InetSocketAddress(portNumber),
+                          endpoint = add,
                           backlog = 0,
                           options = List.empty[Inet.SocketOption],
                           settings = None)
