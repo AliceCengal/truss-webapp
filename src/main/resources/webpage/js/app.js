@@ -7,6 +7,10 @@ var trussApp = angular.module('TrussApp', [
 
 trussApp.config(function($routeProvider) {
     $routeProvider.
+        when('/calcmobile', {
+            templateUrl: 'partials/calc-mobile.html',
+            controller: 'InputPaneCtrl'
+        }).
         when('/calculator', {
             templateUrl: 'partials/calculator.html',
             controller: 'InputPaneCtrl'

@@ -73,17 +73,16 @@
             <button ng-click="removeMember()">-</button>
             <button ng-click="undoMember()" ng-show="memberCache.length > 0">Undo</button>
         </div>
-
     </div>
     <div class="trussmain right-pane app-col">
         <ul class="nav nav-tabs tab-bar">
-            <li ng-class="{'active':isShowingDiagram}">
+            <li ng-class="{'active': tabNavState == 1}">
                 <a href="" ng-click="showDiagram()">Diagram</a></li>
-            <li ng-class="{'active':(!isShowingDiagram)}">
+            <li ng-class="{'active': tabNavState == 2}">
                 <a href="" ng-click="showResult()">Results</a></li>
         </ul>
-        <div class="truss-diagram app-row" ng-show="isShowingDiagram">
-            <svg>
+        <div class="truss-diagram app-row" ng-show="tabNavState == 1">
+            <svg id="actual-diagram">
                 <g ng-attr-transform="translate({{axis}},0)"
                    ng-repeat="axis in horizontalAxisSet()">
                     <line class="diagram-grid"
@@ -147,7 +146,7 @@
                 <input type="image" src="res/button_down.png" ng-click="zoomMinus()">
             </div>
         </div>
-        <div ng-show="!isShowingDiagram" class="truss-result app-col app-row scroll-y">
+        <div ng-show="tabNavState == 2" class="truss-result app-col app-row scroll-y">
             <h4 ng-show="!resultSet.isSuccessful" class="error-banner">{{resultSet.message}}</h4>
             <h3 class="table-header2">Joint Results Table</h3>
             <table class="result-table">
@@ -195,6 +194,7 @@
             <ul class="nav navbar-nav">
                 <li><a href="" ng-click="clearInputSet()">Clear</a></li>
                 <li><a href="" ng-click="loadSample()">Example</a></li>
+                <li><a href="#/calcmobile">Mobile</a></li>
                 <!-- <li><a href="#/datatables">Data Tables</a></li>
                 <li><a href="#/login">Login</a></li> -->
             </ul>

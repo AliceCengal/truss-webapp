@@ -173,7 +173,7 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
     //
     // Unit -> [Int, Int]
     $scope.diagramDimension = function() {
-        var svg = document.getElementsByClassName("truss-diagram")[0];
+        var svg = document.getElementById("actual-diagram");
         return [svg.clientWidth, svg.clientHeight];
     }
 
@@ -260,20 +260,19 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
 
     /// BEGIN Tab Navigation
 
-    // Boolean
-    $scope.isShowingDiagram = true;
+    $scope.tabNavState = 1;
 
     // Unit -> Unit
     $scope.showDiagram = function() {
-        if (!$scope.isShowingDiagram) {
-            $scope.isShowingDiagram = true;
+        if ($scope.tabNavState != 1) {
+            $scope.tabNavState = 1;
         }
     }
 
     // Unit -> Unit
     $scope.showResult = function() {
-        if ($scope.isShowingDiagram) {
-            $scope.isShowingDiagram = false;
+        if ($scope.tabNavState != 2) {
+            $scope.tabNavState = 2;
         }
         $scope.computeResult();
     }

@@ -1,8 +1,186 @@
 
+<div class="m-trussmain app-row app-col">
+    <div ng-show="tabNavState == 1" class="datainput app-row scroll-y">
+        <table class="header-inputs">
+            <tr><td class="header-label">Name</td>
+                <td><input type="text"></td></tr>
+            <tr><td class="header-label">G ID</td>
+                <td><input type="text"></td></tr>
+            <tr><td class="header-label">Date</td>
+                <td><input value="{{date()}}"></td></tr>
+            <tr><td class="header-label">Time</td>
+                <td ><input value="{{time()}}"></td></tr>
+        </table>
+        <h3 class="table-header2">Joint Table</h3>
+        <table class="input-table">
+            <tr>
+                <th>#</th>
+                <th colspan="2">Position (x,y)</th>
+                <th colspan="2">Load (x,y)</th>
+                <th colspan="2">Restraint (x,y)</th>
+            </tr>
+            <tr ng-repeat="joint in inputSet.jointSet">
+                <td>{{joint.id}}</td>
+                <td><input type="number" ng-model="joint.x"></td>
+                <td><input type="number" ng-model="joint.y"></td>
+                <td><input type="number" ng-model="joint.loadX"></td>
+                <td><input type="number" ng-model="joint.loadY"></td>
+                <td><input type="checkbox" ng-model="joint.isRestraintX"></td>
+                <td><input type="checkbox" ng-model="joint.isRestraintY"></td>
+            </tr>
+        </table>
+        <div class="table-mod">
+            <button ng-click="addJoint()">+</button>
+            <button ng-click="removeJoint()">-</button>
+            <button ng-click="undoJoint()" ng-show="jointCache.length > 0">Undo</button>
+        </div>
+        <h3 class="table-header2">Property Table</h3>
+        <table class="input-table">
+            <tr>
+                <th>#</th>
+                <th>Cross-sectional Area</th>
+                <th>Elasticity</th>
+            </tr>
+            <tr ng-repeat="type in inputSet.listBeamTypes()">
+                <td>{{type.id}}</td>
+                <td><input type="number" ng-model="type.area" class="wide"></td>
+                <td><input type="number" ng-model="type.elasticity" class="wide"></td>
+            </tr>
+        </table>
+        <div class="table-mod">
+            <button ng-click="addBeamSpec()">+</button>
+            <button ng-click="removeBeamSpec()">-</button>
+            <button ng-click="undoBeam()" ng-show="beamCache.length > 0">Undo</button>
+        </div>
 
-
-
-
+        <h3 class="table-header2">Member Table</h3>
+        <table class="input-table">
+            <tr>
+                <th>#</th>
+                <th>From Joint</th>
+                <th>To Joint</th>
+                <th>Property Type</th>
+            </tr>
+            <tr ng-repeat="member in inputSet.memberSet">
+                <td>{{member.id}}</td>
+                <td><input type="number" ng-model="member.jointLeft"></td>
+                <td><input type="number" ng-model="member.jointRight"></td>
+                <td><input type="number" ng-model="member.beamId"></td>
+            </tr>
+        </table>
+        <div class="table-mod">
+            <button ng-click="addMember()">+</button>
+            <button ng-click="removeMember()">-</button>
+            <button ng-click="undoMember()" ng-show="memberCache.length > 0">Undo</button>
+        </div>
+        <br>
+        <br>
+    </div>
+    <div ng-show="tabNavState == 2" class="scroll-y scroll-x app-row">
+        <h4 ng-show="!resultSet.isSuccessful" class="error-banner">{{resultSet.message}}</h4>
+        <h3 class="table-header2">Joint Results Table</h3>
+        <table class="result-table">
+            <tr>
+                <th>#</th>
+                <th colspan="2">Displacement (x,y)</th>
+                <th colspan="2">Reaction (x,y)</th>
+            </tr>
+            <tr ng-repeat="jointResult in resultSet.jointResultSet">
+                <td>{{jointResult.id}}</td>
+                <td>{{sigFig(jointResult.displacementX)}}</td>
+                <td>{{sigFig(jointResult.displacementY)}}</td>
+                <td>{{sigFig(jointResult.reactionX)}}</td>
+                <td>{{sigFig(jointResult.reactionY)}}</td>
+            </tr>
+        </table>
+        <h3 class="table-header2">Member Results Table</h3>
+        <table class="result-table">
+            <tr>
+                <th>#</th>
+                <th>Force</th>
+            </tr>
+            <tr ng-repeat="memberResult in resultSet.memberResultSet">
+                <td>{{memberResult.id}}</td>
+                <td class="force-col">{{sigFig(memberResult.force)}}</td>
+            </tr>
+        </table>
+        <br>
+        <br>
+    </div>
+    <div class="app-row" ng-show="tabNavState == 3">
+        <svg id="actual-diagram">
+            <g ng-attr-transform="translate({{axis}},0)"
+               ng-repeat="axis in horizontalAxisSet()">
+                <line class="diagram-grid"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      ng-attr-y2="{{diagramDimension()[1]}}"></line> <!--
+                <text x="3" y="13" class="diagram-grid-label">
+                    {{decorrectHorizontal(axis).toFixed(0)}}</text> -->
+            </g>
+            <g ng-attr-transform="translate(0,{{axis}})" ng-repeat="axis in verticalAxisSet()">
+                <line class="diagram-grid"
+                      x1="0"
+                      y1="0"
+                      ng-attr-x2="{{diagramDimension()[0]}}"
+                      y2="0"></line> <!--
+                <text x="3" y="-5" class="diagram-grid-label">
+                    {{decorrectVertical(axis).toFixed(0)}}</text> -->
+            </g>
+            <line ng-repeat="member in inputSet.memberSet"
+                  class="member-diagram"
+                  ng-attr-x1="{{correctHorizontal(inputSet.jointForId(member.jointLeft).x)}}"
+                  ng-attr-y1="{{correctVertical(inputSet.jointForId(member.jointLeft).y)}}"
+                  ng-attr-x2="{{correctHorizontal(inputSet.jointForId(member.jointRight).x)}}"
+                  ng-attr-y2="{{correctVertical(inputSet.jointForId(member.jointRight).y)}}"></line>
+            <g ng-repeat="joint in inputSet.jointSet"
+               ng-attr-transform="translate({{correctHorizontal(joint.x)}},{{correctVertical(joint.y)}})">
+                <circle class="joint-diagram" cx="0" cy="0" r="4"></circle>
+                <line class="restraint-cross"
+                        x1="-20"
+                        x2="20"
+                        y1="0"
+                        y2="0"
+                        ng-attr-visibility="{{joint.isRestraintX ? 'visible' : 'hidden'}}"></line>
+                <line class="restraint-cross"
+                        x1="0"
+                        x2="0"
+                        y1="-20"
+                        y2="20"
+                        ng-attr-visibility="{{joint.isRestraintY ? 'visible' : 'hidden'}}"></line>
+                <polygon class="load-arrow"
+                         points="0,4 -10,24 -1,24 -1,44 1,44 1,24 10,24"
+                         ng-attr-visibility="{{(joint.loadY > 0) ? 'visible' : 'hidden'}}"></polygon>
+                <polygon class="load-arrow"
+                         points="0,4 -10,24 -1,24 -1,44 1,44 1,24 10,24"
+                         transform="rotate(90)"
+                         ng-attr-visibility="{{(joint.loadX > 0) ? 'visible' : 'hidden'}}"></polygon>
+                <polygon class="load-arrow"
+                         points="0,4 -10,24 -1,24 -1,44 1,44 1,24 10,24"
+                         transform="rotate(180)"
+                         ng-attr-visibility="{{(joint.loadY < 0) ? 'visible' : 'hidden'}}"></polygon>
+                <polygon class="load-arrow"
+                         points="0,4 -10,24 -1,24 -1,44 1,44 1,24 10,24"
+                         transform="rotate(270)"
+                         ng-attr-visibility="{{(joint.loadX < 0) ? 'visible' : 'hidden'}}"></polygon>
+                <text x="15" y="15" dy=".50em">{{joint.id}}</text>
+            </g>
+        </svg>
+        <div class="corner">
+            <input type="image" src="res/button_up.png" ng-click="zoomPlus()"><br/>
+            <input type="image" src="res/button_down.png" ng-click="zoomMinus()">
+        </div>
+    </div>
+    <ul class="nav nav-tabs tab-bar app-row">
+        <li ng-class="{'active': tabNavState == 1}">
+            <a href="" ng-click="tabNavState = 1">Input</a></li>
+        <li ng-class="{'active': tabNavState == 3}">
+            <a href="" ng-click="tabNavState = 3">Diagram</a></li>
+        <li ng-class="{'active': tabNavState == 2}">
+            <a href="" ng-click="showResult()">Results</a></li>
+    </ul>
+</div>
 <nav class="navbar navbar-inverse navbar-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -18,6 +196,7 @@
             <ul class="nav navbar-nav">
                 <li><a href="" ng-click="clearInputSet()">Clear</a></li>
                 <li><a href="" ng-click="loadSample()">Example</a></li>
+                <li><a href="#/calculator">Desktop</a></li>
                 <!-- <li><a href="#/datatables">Data Tables</a></li>
                 <li><a href="#/login">Login</a></li> -->
             </ul>
