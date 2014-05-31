@@ -1,20 +1,4 @@
 
-<div class="navbar navbar-inverse navbar-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand custom-brand" href="#/calculator">PAVE Truss Web App</a>
-        </div>
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="" ng-click="clearInputSet()">Clear</a></li>
-                <li><a href="" ng-click="loadSample()">Example</a></li>
-                <!-- <li><a href="#/datatables">Data Tables</a></li>
-                <li><a href="#/login">Login</a></li> -->
-            </ul>
-        </div>
-        <!--/.nav-collapse -->
-    </div>
-</div>
 <div class="trusswin app-row app-col">
     <div class="trussmain datainput app-col scroll-y">
         <table class="header-inputs">
@@ -141,18 +125,18 @@
                             y2="20"
                             ng-attr-visibility="{{joint.isRestraintY ? 'visible' : 'hidden'}}"></line>
                     <polygon class="load-arrow"
-                             points="0,4 -10,24 -3,24 -3,34 3,34 3,24 10,24"
+                             points="0,4 -10,24 -1,24 -1,44 1,44 1,24 10,24"
                              ng-attr-visibility="{{(joint.loadY > 0) ? 'visible' : 'hidden'}}"></polygon>
                     <polygon class="load-arrow"
-                             points="0,4 -10,24 -3,24 -3,34 3,34 3,24 10,24"
+                             points="0,4 -10,24 -1,24 -1,44 1,44 1,24 10,24"
                              transform="rotate(90)"
                              ng-attr-visibility="{{(joint.loadX > 0) ? 'visible' : 'hidden'}}"></polygon>
                     <polygon class="load-arrow"
-                             points="0,4 -10,24 -3,24 -3,34 3,34 3,24 10,24"
+                             points="0,4 -10,24 -1,24 -1,44 1,44 1,24 10,24"
                              transform="rotate(180)"
                              ng-attr-visibility="{{(joint.loadY < 0) ? 'visible' : 'hidden'}}"></polygon>
                     <polygon class="load-arrow"
-                             points="0,4 -10,24 -3,24 -3,34 3,34 3,24 10,24"
+                             points="0,4 -10,24 -1,24 -1,44 1,44 1,24 10,24"
                              transform="rotate(270)"
                              ng-attr-visibility="{{(joint.loadX < 0) ? 'visible' : 'hidden'}}"></polygon>
                     <text x="15" y="15" dy=".50em">{{joint.id}}</text>
@@ -164,7 +148,8 @@
             </div>
         </div>
         <div ng-show="!isShowingDiagram" class="truss-result app-col app-row scroll-y">
-            <h3>Joint Results Table</h3>
+            <h4 ng-show="!resultSet.isSuccessful" class="error-banner">{{resultSet.message}}</h4>
+            <h3 class="table-header2">Joint Results Table</h3>
             <table class="result-table">
                 <tr>
                     <th>#</th>
@@ -179,7 +164,7 @@
                     <td>{{sigFig(jointResult.reactionY)}}</td>
                 </tr>
             </table>
-            <h3>Member Results Table</h3>
+            <h3 class="table-header2">Member Results Table</h3>
             <table class="result-table">
                 <tr>
                     <th>#</th>
@@ -190,7 +175,29 @@
                     <td class="force-col">{{sigFig(memberResult.force)}}</td>
                 </tr>
             </table>
+            <br>
+            <br>
         </div>
     </div>
 </div>
-
+<nav class="navbar navbar-inverse navbar-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand custom-brand" href="#/calculator">PAVE Truss Web App</a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                data-target="#truss-navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse" id="truss-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="" ng-click="clearInputSet()">Clear</a></li>
+                <li><a href="" ng-click="loadSample()">Example</a></li>
+                <!-- <li><a href="#/datatables">Data Tables</a></li>
+                <li><a href="#/login">Login</a></li> -->
+            </ul>
+        </div>
+    </div>
+</nav>

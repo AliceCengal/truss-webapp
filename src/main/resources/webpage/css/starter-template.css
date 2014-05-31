@@ -139,7 +139,7 @@ table * {
 }
 
 .truss-result {
-  top: 42px;
+  top: 47px;
   bottom: 0px;
   padding-left: 15px;
   padding-bottom: 15px;
@@ -174,7 +174,7 @@ table * {
   color: black;
   font-size: 18px;
   padding-left: 15px;
-  padding-right: 15px
+  padding-right: 15px;
   text-align: left;
 }
 
@@ -198,4 +198,14 @@ table * {
 .tab-bar {
   padding-left: 5px;
   padding-top: 5px;
+}
+
+.error-banner {
+  padding: 15px;
+  font-size: 18px;
+  color: #ff4500;
+  border-width: 2px;
+  border-style: dashed;
+  border-color: #ff4500;
+  margin-right: 15px;
 }
