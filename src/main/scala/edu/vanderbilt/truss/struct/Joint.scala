@@ -13,10 +13,10 @@ import Joint._
 /**
  * Created by athran on 5/3/14.
  */
-case class Joint(id: Int,
-                 coor: (Double, Double),
+case class Joint(id:        Int,
+                 coor:      (Double, Double),
                  restraint: (Boolean, Boolean),
-                 load: (Double, Double))
+                 load:      (Double, Double))
     extends truss.Joint
 {
   def xCoor(): Double = coor._1

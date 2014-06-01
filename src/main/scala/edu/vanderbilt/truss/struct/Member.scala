@@ -10,9 +10,9 @@ import Member._
 /**
  * Created by athran on 5/3/14.
  */
-case class Member(id: Int,
-                  joints: (Int, Int),
-                  area: Double,
+case class Member(id:         Int,
+                  joints:     (Int, Int),
+                  area:       Double,
                   elasticity: Double)
     extends truss.Member
 {
@@ -21,12 +21,12 @@ case class Member(id: Int,
   def jointRight(): Int = joints._2
 
   def writeToJson(writer: JsonWriter) {
-    writer.obj { w =>
-      w.name(KEY_ID).value(id)
-      w.name(KEY_LEFT).value(jointLeft())
-      w.name(KEY_RIGHT).value(jointRight())
-      w.name(KEY_AREA).value(area)
-      w.name(KEY_ELAS).value(elasticity)
+    writer.obj { _.
+      name(KEY_ID).value(id).
+      name(KEY_LEFT).value(jointLeft()).
+      name(KEY_RIGHT).value(jointRight()).
+      name(KEY_AREA).value(area).
+      name(KEY_ELAS).value(elasticity)
     }
   }
 }
@@ -39,22 +39,22 @@ object Member {
   val KEY_ELAS  = "elasticity"
 
   def fromJson(json: JsonObject): Member = {
-    Member(
-            id = json.get(KEY_ID),
-            joints = (
-                json.get(KEY_LEFT),
-                json.get(KEY_RIGHT)),
-            area = json.get(KEY_AREA),
-            elasticity = json.get(KEY_ELAS)
-          )
+    Member(id         = json.get(KEY_ID),
+           joints     = (json.get(KEY_LEFT),
+                         json.get(KEY_RIGHT)),
+           area       = json.get(KEY_AREA),
+           elasticity = json.get(KEY_ELAS))
   }
 
-  def compatCreateMember(id: Int,
-                         left: Int,
+  def compatCreateMember(id:    Int,
+                         left:  Int,
                          right: Int,
-                         area: Double,
-                         e: Double): truss.Member = {
-    Member(id = id, joints = (left, right), area = area, elasticity = e)
+                         area:  Double,
+                         e:     Double): truss.Member = {
+    Member(id         = id, 
+           joints     = (left, right), 
+           area       = area, 
+           elasticity = e)
   }
 
 }

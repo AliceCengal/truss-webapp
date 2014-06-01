@@ -64,28 +64,26 @@ object ResultSet {
   val KEY_MEMBERS  = "memberResultSet"
 
   def fromJson(json: JsonObject): ResultSet = {
-    ResultSet(
-               userId        = json.get(KEY_ID),
-               inputSetId    = json.get(KEY_INPUTID),
-               timeStamp     = json.get(KEY_TIME),
-               message       = json.get(KEY_MESSAGE),
-               isSuccessful  = json.get(KEY_SUCCESS),
-               responseCode  = json.get(KEY_RESPONSE),
-               jointResults  =
-                   json.get(KEY_JOINTS).
-                       map(elem => JointResult.fromJson(elem)).
-                       toSet,
-               memberResults =
-                   json.get(KEY_MEMBERS).
-                       map(elem => MemberResult.fromJson(elem)).
-                       toSet)
+    ResultSet(userId        = json.get(KEY_ID),
+              inputSetId    = json.get(KEY_INPUTID),
+              timeStamp     = json.get(KEY_TIME),
+              message       = json.get(KEY_MESSAGE),
+              isSuccessful  = json.get(KEY_SUCCESS),
+              responseCode  = json.get(KEY_RESPONSE),
+              jointResults  =
+                  json.get(KEY_JOINTS).
+                      map(elem => JointResult.fromJson(elem)).
+                      toSet,
+              memberResults =
+                  json.get(KEY_MEMBERS).
+                      map(elem => MemberResult.fromJson(elem)).
+                      toSet)
   }
 
   implicit val ResultSetMarshaller =
     Marshaller.of[ResultSet](`application/json`) { (value, contentType, ctx) =>
-      ctx.marshalTo(
-                     HttpEntity(contentType, value.writeToJson),
-                     HttpHeaders.`Access-Control-Allow-Origin`(AllOrigins))
+      ctx.marshalTo(HttpEntity(contentType, value.writeToJson),
+                    HttpHeaders.`Access-Control-Allow-Origin`(AllOrigins))
     }
 
 }

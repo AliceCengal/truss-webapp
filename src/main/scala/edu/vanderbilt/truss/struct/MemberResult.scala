@@ -29,10 +29,8 @@ object MemberResult {
   val KEY_FORCE = "force"
 
   def fromJson(json: JsonObject): MemberResult = {
-    MemberResult(
-                  id = json.get(KEY_ID),
-                  force = json.get(KEY_FORCE)
-                )
+    MemberResult(id = json.get(KEY_ID),
+                 force = json.get(KEY_FORCE))
   }
 
   def from(struct: truss.MemberResultStruct): MemberResult = {

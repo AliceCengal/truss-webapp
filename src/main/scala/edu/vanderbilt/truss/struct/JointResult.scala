@@ -8,9 +8,9 @@ import edu.vanderbilt.truss.util.GsonConversion._
 /**
  * Created by athran on 5/3/14.
  */
-case class JointResult(id: Int,
+case class JointResult(id:           Int,
                        displacement: (Double,Double),
-                       reaction: (Double,Double))
+                       reaction:     (Double,Double))
     extends truss.JointResultStruct
 {
   import JointResult._
@@ -43,26 +43,23 @@ object JointResult {
   val KEY_REACT_Y = "reactionY"
 
   def fromJson(json: JsonObject): JointResult = {
-    JointResult(
-                 id = json.get(KEY_ID),
-                 displacement = (
-                     json.get(KEY_DISP_X),
-                     json.get(KEY_DISP_Y)),
-                 reaction = (
-                     json.get(KEY_REACT_X),
-                     json.get(KEY_REACT_Y))
-               )
+    JointResult(id = json.get(KEY_ID),
+                displacement = (
+                    json.get(KEY_DISP_X),
+                    json.get(KEY_DISP_Y)),
+                reaction = (
+                    json.get(KEY_REACT_X),
+                    json.get(KEY_REACT_Y)))
   }
 
   def from(result: truss.JointResultStruct): JointResult = {
-    JointResult(
-                 id = result.id(),
-                 displacement = (
-                     result.displacementX(),
-                     result.displacementY()),
-                 reaction = (
-                     result.reactionX(),
-                     result.reactionY()))
+    JointResult(id = result.id(),
+                displacement = (
+                    result.displacementX(),
+                    result.displacementY()),
+                reaction = (
+                    result.reactionX(),
+                    result.reactionY()))
   }
 
 }
