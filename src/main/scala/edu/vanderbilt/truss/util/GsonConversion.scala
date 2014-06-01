@@ -1,6 +1,7 @@
 package edu.vanderbilt.truss.util
 
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.stream.JsonWriter
 
 /**
@@ -20,6 +21,8 @@ object GsonConversion {
   implicit def jsonToString(json: JsonElement): String = json.getAsString
 
   implicit def jsonToBoolean(json: JsonElement): Boolean = json.getAsBoolean
+  
+  implicit def jsonToObject(json: JsonElement): JsonObject = json.getAsJsonObject
 
   implicit def jsonToIterable(json: JsonElement): Iterator[JsonElement] = json.getAsJsonArray.iterator().asScala
 

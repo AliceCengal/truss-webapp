@@ -71,6 +71,7 @@ public final class EngineUtil {
                 reporter.report(new ResultFactory.ResultBuilder()
                                         .setMessage(message)
                                         .build());
+                return;
             }
             calculateBWAndDirCos();
             calculateUnrestrainedStiffnessMx();

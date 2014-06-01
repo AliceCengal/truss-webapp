@@ -9,6 +9,7 @@ import spray.routing.HttpService
 
 import edu.vanderbilt.truss.struct.InputSet
 import edu.vanderbilt.truss.parser.ParserUtil
+import edu.vanderbilt.truss.newengine._
 
 /**
  * The entry point of the server.
@@ -27,69 +28,29 @@ trait MainService extends HttpService {
 
   implicit def executionContext = actorRefFactory.dispatcher
 
-  implicit val timeout = Timeout(5 seconds)
-
-  val trussComputer = actorRefFactory.actorOf(Props[TrussComputer], "trussComputer")
+  implicit val timeout = Timeout(5.seconds)
 
   val mainRoute =
     pathPrefix("api") {
-      pathPrefix("user" / Segment) {
-        userName =>
-          pathEnd {
-            get {
-              complete("Return info for user " + userName)
-            } ~
-            post {
-              complete("Register user " + userName)
-            }
-          } ~
-          path("inputset") {
-            get {
-              complete("return a list of InputSet ids for user " + userName)
-            } ~
-            post {
-              complete("create a new InputSet record for user " + userName)
-            }
-          } ~
-          path("inputset" / Segment) {
-            inputSetId =>
-              get {
-                complete("Return the latest InputSet of user " + userName + " with id " + inputSetId)
-              } ~
-              post {
-                complete("Edit the InputSet record of user " + userName + " with id " + inputSetId)
-              }
-          }
-      } ~
       path("computation") {
         post {
           // Deserialize the json into InputSet. See `InputSet.InputSetUnmarshaller`
           entity(as[InputSet]) { input =>
             complete {
-              // Send request to `trussComputer`, asking it to do a computation.
-              // The `?` method returns a `Future[Any]`.
-              // Then cast the `Future[Any]` to Future[ComputationResult].
-              // Store that in `future`.
-              val future = (trussComputer ? TrussComputer.Compute(input)).
-                           mapTo[TrussComputer.ComputationResult]
-
-              // Extract the result from `Future[ComputationResult(ResultSet)]`.
-              // Return the result, which gets serialized into HttpEntity.
-              // See `ResultSet.ResultSetMarshaller`
-              for (TrussComputer.ComputationResult(result) <- future) yield result
+              Computation(input)
             }
           }
         }
       } ~
       path("sample") {
         get {
-          complete("return a list of sample Ids")
+          sample
         }
       } ~
       path("sample" / Segment) {
         inputSetId =>
           get {
-            complete(InputSet.fromLegacy(ParserUtil.getParser("").parse()))
+            sample
           }
       } ~
       indexPage
@@ -98,6 +59,8 @@ trait MainService extends HttpService {
       getFromResource("webpage/main.html")
     } ~
     getFromResourceDirectory("webpage")
+    
+  def sample = complete(InputSet.fromLegacy(ParserUtil.getParser("").parse()))
 
   def notFoundPage = getFromResource("webpage/not_found.html")
 

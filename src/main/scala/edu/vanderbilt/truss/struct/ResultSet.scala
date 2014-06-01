@@ -17,14 +17,14 @@ import ResultSet._
 /**
  * Created by athran on 5/4/14.
  */
-case class ResultSet(userId: String,
-                     inputSetId: String,
-                     timeStamp: Int,
-                     message: String,
-                     isSuccessful: Boolean,
-                     responseCode: Int,
-                     jointResults: Set[JointResult],
-                     memberResults: Set[MemberResult])
+case class ResultSet(userId:        String            = "",
+                     inputSetId:    String            = "",
+                     timeStamp:     Int               = 0,
+                     message:       String            = "",
+                     isSuccessful:  Boolean           = false,
+                     responseCode:  Int               = 0,
+                     jointResults:  Set[JointResult]  = Set(),
+                     memberResults: Set[MemberResult] = Set())
     extends truss.ResultStruct
 {
   def jointSet(): util.Set[truss.JointResultStruct] =
@@ -65,19 +65,19 @@ object ResultSet {
 
   def fromJson(json: JsonObject): ResultSet = {
     ResultSet(
-               userId = json.get(KEY_ID),
-               inputSetId = json.get(KEY_INPUTID),
-               timeStamp = json.get(KEY_TIME),
-               message = json.get(KEY_MESSAGE),
-               isSuccessful = json.get(KEY_SUCCESS),
-               responseCode = json.get(KEY_RESPONSE),
-               jointResults =
+               userId        = json.get(KEY_ID),
+               inputSetId    = json.get(KEY_INPUTID),
+               timeStamp     = json.get(KEY_TIME),
+               message       = json.get(KEY_MESSAGE),
+               isSuccessful  = json.get(KEY_SUCCESS),
+               responseCode  = json.get(KEY_RESPONSE),
+               jointResults  =
                    json.get(KEY_JOINTS).
-                       map(elem => JointResult.fromJson(elem.getAsJsonObject)).
+                       map(elem => JointResult.fromJson(elem)).
                        toSet,
                memberResults =
                    json.get(KEY_MEMBERS).
-                       map(elem => MemberResult.fromJson(elem.getAsJsonObject)).
+                       map(elem => MemberResult.fromJson(elem)).
                        toSet)
   }
 
