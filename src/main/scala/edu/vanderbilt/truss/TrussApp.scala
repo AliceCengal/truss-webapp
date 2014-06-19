@@ -1,14 +1,13 @@
 package edu.vanderbilt.truss
 
 import java.io.File
+import scala.util.Properties
 
 import akka.actor.{OneForOneStrategy, Props, ActorSystem}
 import akka.io.{Inet, IO}
-
-import spray.can.Http
-import java.net.InetSocketAddress
-import scala.util.Properties
 import akka.dispatch.sysmsg.Supervise
+import spray.can.Http
+
 
 object TrussApp extends App with LegacyTest {
 
@@ -16,7 +15,7 @@ object TrussApp extends App with LegacyTest {
   println("|                         Truss Webapp                        |")
   println("===============================================================")
   println()
-
+  
   this.args match {
     case Array("help")        => printGuide()
     case Array(address, port) => bootServer(address, port.toInt)

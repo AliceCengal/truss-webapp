@@ -1,0 +1,33 @@
+{
+    "studentId":     "John Doe",
+    "inputSetId": "Problem infinite",
+    "jointSet":   [
+        {
+            "id":           1,
+            "x":            0,
+            "y":            0,
+            "isRestraintX": true,
+            "isRestraintY": true,
+            "loadX":        0,
+            "loadY":        0
+        },
+        {
+            "id":           2,
+            "x":            100,
+            "y":            0,
+            "isRestraintX": false,
+            "isRestraintY": true,
+            "loadX":        -10,
+            "loadY":        0
+        }
+    ],
+    "memberSet":  [
+        {
+            "id":         1,
+            "jointLeft":  1,
+            "jointRight": 2,
+            "area":       0.5,
+            "elasticity": 3000000
+        }
+    ]
+}

@@ -311,7 +311,15 @@ trussControllers.controller('InputPaneCtrl', function($scope, $http) {
     // Unit -> Unit
     $scope.computeResult = function() {
         $scope.isWaitingForResult = true;
-        $http.post("api/computation", JSON.stringify($scope.inputSet))
+        var input = $scope.inputSet;
+        for (var m in input.memberSet) {
+          var member = input.memberSet[m];
+          var beam = input.beamSet[input.beamTypeIdForMember(member) - 1];
+          member.area = beam.area;
+          member.elasticity = beam.elasticity;
+        }
+        
+        $http.post("api/computation", JSON.stringify(input))
             .success(function(data) {
                 $scope.resultSet = data;
                 $scope.resultSet.jointResultSet.sort(compareId);
