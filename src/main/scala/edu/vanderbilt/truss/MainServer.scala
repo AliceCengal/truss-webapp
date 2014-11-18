@@ -70,11 +70,7 @@ trait MainService extends HttpService {
     } ~
     getFromResourceDirectory("webpage")
     
-  def sample = complete{
-    val file = new File(getClass.getResource("/sample2.txt").getPath)
-    val lines = io.Source.fromFile(file).getLines.mkString("\n")
-    InputSet.fromJson(new JsonParser().parse(lines).getAsJsonObject)
-  }
+  def sample = getFromResource("sample2.txt")
 
   def notFoundPage = getFromResource("webpage/not_found.html")
 
