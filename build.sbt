@@ -1,8 +1,7 @@
-import com.typesafe.sbt.SbtStartScript
-
-seq(SbtStartScript.startScriptForClassesSettings: _*)
 
 organization  := "edu.vanderbilt.truss"
+
+name          := "Truss Webapp"
 
 version       := "0.1"
 
@@ -14,17 +13,9 @@ scalacOptions := Seq("-unchecked",
                      "-feature", 
                      "-language:implicitConversions")
 
-name          := "Truss Webapp"
-
-resolvers ++= Seq(
-    "spray repo" at "http://repo.spray.io/"
-)
+resolvers += "Twitter" at "http://maven.twttr.com"
 
 libraryDependencies ++= Seq(
-    "io.spray"            %   "spray-can"     % "1.2.0",
-    "io.spray"            %   "spray-routing" % "1.2.0",
-    "io.spray"            %   "spray-testkit" % "1.2.0",
-    "com.typesafe.akka"   %%  "akka-actor"    % "2.2.3",
-    "com.typesafe.akka"   %%  "akka-testkit"  % "2.2.3",
+    "com.twitter" %% "finatra" % "1.5.3",
     "com.google.code.gson" %  "gson" % "2.2.4"
 )
