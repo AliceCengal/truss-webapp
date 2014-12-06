@@ -12,21 +12,27 @@ import com.google.gson.stream.JsonWriter
 object GsonConversion {
 
   import scala.collection.JavaConverters._
-  import scala.language.implicitConversions
 
-  implicit def jsonToInt(json: JsonElement): Int = json.getAsInt
+  implicit def jsonToInt(json: JsonElement): Int = 
+    json.getAsInt
 
-  implicit def jsonToDouble(json: JsonElement): Double = json.getAsDouble
+  implicit def jsonToDouble(json: JsonElement): Double = 
+    json.getAsDouble
 
-  implicit def jsonToString(json: JsonElement): String = json.getAsString
+  implicit def jsonToString(json: JsonElement): String = 
+    json.getAsString
 
-  implicit def jsonToBoolean(json: JsonElement): Boolean = json.getAsBoolean
+  implicit def jsonToBoolean(json: JsonElement): Boolean = 
+    json.getAsBoolean
   
-  implicit def jsonToObject(json: JsonElement): JsonObject = json.getAsJsonObject
+  implicit def jsonToObject(json: JsonElement): JsonObject = 
+    json.getAsJsonObject
 
-  implicit def jsonToIterable(json: JsonElement): Iterator[JsonElement] = json.getAsJsonArray.iterator().asScala
+  implicit def jsonToIterable(json: JsonElement): Iterator[JsonElement] = 
+    json.getAsJsonArray.iterator().asScala
 
-  implicit def writerToSuper(writer: JsonWriter): SuperWriter = new SuperWriter(writer)
+  implicit def writerToSuper(writer: JsonWriter): SuperWriter = 
+    new SuperWriter(writer)
 
 }
 
