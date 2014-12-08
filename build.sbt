@@ -1,6 +1,4 @@
 
-organization  := "edu.vanderbilt.truss"
-
 name          := "Truss Webapp"
 
 version       := "0.1"
