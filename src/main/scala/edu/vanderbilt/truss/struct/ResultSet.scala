@@ -6,9 +6,6 @@ import scala.collection.JavaConverters._
 
 import com.google.gson.JsonObject
 import com.google.gson.stream.JsonWriter
-import spray.httpx.marshalling.Marshaller
-import spray.http.MediaTypes.`application/json`
-import spray.http.{AllOrigins, HttpHeaders, HttpEntity}
 
 import edu.vanderbilt.truss
 import edu.vanderbilt.truss.util.GsonConversion._
@@ -79,11 +76,5 @@ object ResultSet {
                       map(elem => MemberResult.fromJson(elem)).
                       toSet)
   }
-
-  implicit val ResultSetMarshaller =
-    Marshaller.of[ResultSet](`application/json`) { (value, contentType, ctx) =>
-      ctx.marshalTo(HttpEntity(contentType, value.writeToJson),
-                    HttpHeaders.`Access-Control-Allow-Origin`(AllOrigins))
-    }
 
 }

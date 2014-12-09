@@ -2,9 +2,6 @@ package edu.vanderbilt.truss.struct
 
 import com.google.gson.stream.JsonWriter
 import com.google.gson.{JsonParser, JsonObject}
-import spray.httpx.unmarshalling.Unmarshaller
-import spray.http.MediaTypes.`application/json`
-import spray.http.HttpEntity
 
 import edu.vanderbilt.truss
 import edu.vanderbilt.truss.util.GsonConversion._
@@ -68,11 +65,6 @@ object Joint {
                json.get(KEY_LOAD_X),
                json.get(KEY_LOAD_Y))
          )
-  }
-
-  implicit val JointUnmarshaller = Unmarshaller[Joint](`application/json`) {
-    case HttpEntity.NonEmpty(contentType, data) =>
-      fromJson(new JsonParser().parse(data.asString).getAsJsonObject)
   }
 
   def compatCreateJoint(id: Int,

@@ -1,0 +1,102 @@
+{
+    "studentId":     "John Doe",
+    "inputSetId": "Problem infinite",
+    "jointSet":   [
+        {
+            "id":           1,
+            "x":            0,
+            "y":            96,
+            "isRestraintX": false,
+            "isRestraintY": false,
+            "loadX":        0,
+            "loadY":        -2000
+        },
+        {
+            "id":           2,
+            "x":            144,
+            "y":            96,
+            "isRestraintX": false,
+            "isRestraintY": false,
+            "loadX":        0,
+            "loadY":        -1000
+        },
+        {
+            "id":           3,
+            "x":            288,
+            "y":            96,
+            "isRestraintX": true,
+            "isRestraintY": true,
+            "loadX":        0,
+            "loadY":        0
+        },
+        {
+            "id":           4,
+            "x":            72,
+            "y":            0,
+            "isRestraintX": false,
+            "isRestraintY": false,
+            "loadX":        0,
+            "loadY":        0
+        },
+        {
+            "id":           5,
+            "x":            216,
+            "y":            0,
+            "isRestraintX": false,
+            "isRestraintY": true,
+            "loadX":        0,
+            "loadY":        0
+        }
+    ],
+    "memberSet":  [
+        {
+            "id":         1,
+            "jointLeft":  1,
+            "jointRight": 4,
+            "area":       0.96,
+            "elasticity": 30000000
+        },
+        {
+            "id":         2,
+            "jointLeft":  1,
+            "jointRight": 2,
+            "area":       0.96,
+            "elasticity": 30000000
+        },
+        {
+            "id":         3,
+            "jointLeft":  4,
+            "jointRight": 2,
+            "area":       0.96,
+            "elasticity": 30000000
+        },
+        {
+            "id":         4,
+            "jointLeft":  4,
+            "jointRight": 5,
+            "area":       0.96,
+            "elasticity": 30000000
+        },
+        {
+            "id":         5,
+            "jointLeft":  2,
+            "jointRight": 5,
+            "area":       0.96,
+            "elasticity": 30000000
+        },
+        {
+            "id":         6,
+            "jointLeft":  2,
+            "jointRight": 3,
+            "area":       0.96,
+            "elasticity": 30000000
+        },
+        {
+            "id":         7,
+            "jointLeft":  5,
+            "jointRight": 3,
+            "area":       0.96,
+            "elasticity": 30000000
+        }
+    ]
+}

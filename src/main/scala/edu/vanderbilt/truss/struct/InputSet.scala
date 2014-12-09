@@ -6,10 +6,6 @@ import scala.collection.JavaConverters._
 
 import com.google.gson.{JsonParser, JsonObject}
 import com.google.gson.stream.JsonWriter
-import spray.httpx.unmarshalling.Unmarshaller
-import spray.http.MediaTypes.`application/json`
-import spray.http.{AllOrigins, HttpHeaders, HttpEntity}
-import spray.httpx.marshalling.Marshaller
 
 import edu.vanderbilt.truss.InputStruct
 import edu.vanderbilt.truss
@@ -82,17 +78,5 @@ object InputSet {
               jointSet = legacy.joints().asScala.map(_.asInstanceOf[Joint]).toSet,
               memberSet = legacy.members().asScala.map(_.asInstanceOf[Member]).toSet)
   }
-
-  implicit val InputSetUnmarshaller =
-      Unmarshaller[InputSet](`application/json`) {
-        case HttpEntity.NonEmpty(contentType, data) =>
-          fromJson(new JsonParser().parse(data.asString).getAsJsonObject)
-      }
-
-  implicit val InputSetMarshaller =
-    Marshaller.of[InputSet](`application/json`) { (value, contentType, ctx) =>
-      ctx.marshalTo(HttpEntity(contentType, value.writeToJson),
-                     HttpHeaders.`Access-Control-Allow-Origin`(AllOrigins))
-    }
 
 }
