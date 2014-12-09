@@ -1,4 +1,5 @@
 import com.twitter.finatra._
+import com.twitter.util.Future
 
 object TrussApp extends App {
   
@@ -49,11 +50,12 @@ class TrussController extends Controller {
       .body(s)
 
   post("/api/computation") { request =>
-    val jsonInput = parser.parse(request.contentString)
-    val inputSet = InputSet.fromJson(jsonInput.getAsJsonObject)
-    val resultSet = new TrussEngine(inputSet).compute
-    
-    renderJson(resultSet.writeToJson).toFuture
+    Future {
+      val jsonInput = parser.parse(request.contentString)
+      val inputSet = InputSet.fromJson(jsonInput.getAsJsonObject)
+      val resultSet = new TrussEngine(inputSet).compute
+      renderJson(resultSet.writeToJson)
+    }
   }
   
   get("/api/sample") { request =>
